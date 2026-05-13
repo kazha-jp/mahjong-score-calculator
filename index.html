@@ -1,0 +1,3678 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#1a1a2e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="麻雀点数">
+<meta name="description" content="麻雀点数計算機 - 飜数・符から点数を瞬時に計算">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.svg">
+<title>麻雀点数計算機</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap');
+
+  :root {
+    --bg: #0d0d1a;
+    --bg2: #141428;
+    --bg3: #1e1e38;
+    --surface: #1a1a30;
+    --surface2: #22223a;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.15);
+    --gold: #d4a843;
+    --gold2: #f0c96a;
+    --gold-dim: rgba(212,168,67,0.15);
+    --red: #e05555;
+    --red2: #ff7070;
+    --red-dim: rgba(224,85,85,0.15);
+    --green: #4caf7d;
+    --green-dim: rgba(76,175,125,0.15);
+    --blue: #5b8dee;
+    --blue-dim: rgba(91,141,238,0.15);
+    --text: #f0ede4;
+    --text2: rgba(240,237,228,0.6);
+    --text3: rgba(240,237,228,0.35);
+    --radius: 12px;
+    --radius-lg: 18px;
+    --font-serif: 'Noto Serif JP', serif;
+    --font-sans: 'Noto Sans JP', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  html, body {
+    width: 100%; min-height: 100vh;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    overscroll-behavior: none;
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 2rem;
+  }
+
+  /* ─── Header ─── */
+  .header {
+    width: 100%;
+    max-width: 480px;
+    padding: 1.25rem 1.25rem 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo {
+    font-family: var(--font-serif);
+    font-size: 1.3rem;
+    font-weight: 900;
+    color: var(--gold);
+    letter-spacing: 0.08em;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .logo-tile {
+    width: 32px; height: 38px;
+    background: var(--gold);
+    border-radius: 5px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--bg);
+    font-size: 1rem;
+    font-weight: 900;
+    box-shadow: 0 2px 8px rgba(212,168,67,0.4);
+  }
+  .history-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    color: var(--text2);
+    border-radius: 8px;
+    padding: 0.4rem 0.85rem;
+    font-family: var(--font-sans);
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .history-btn:active { opacity: 0.7; transform: scale(0.97); }
+
+  /* ─── Main card ─── */
+  .card {
+    width: calc(100% - 2rem);
+    max-width: 480px;
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius-lg);
+    margin: 0.75rem 1rem;
+    padding: 1.25rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--gold), var(--red), var(--gold));
+    opacity: 0.6;
+  }
+
+  /* ─── Toggle groups ─── */
+  .section-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 0.6rem;
+  }
+  .toggle-group {
+    display: grid;
+    gap: 8px;
+    margin-bottom: 1.1rem;
+  }
+  .toggle-group.cols-2 { grid-template-columns: 1fr 1fr; }
+  .toggle-group.cols-4 { grid-template-columns: repeat(4, 1fr); }
+
+  .tog-btn {
+    background: var(--bg3);
+    border: 1.5px solid var(--border);
+    color: var(--text2);
+    border-radius: 10px;
+    padding: 0.65rem 0.5rem;
+    font-family: var(--font-sans);
+    font-size: 0.88rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+    line-height: 1.3;
+  }
+  .tog-btn .sub {
+    display: block;
+    font-size: 0.65rem;
+    color: var(--text3);
+    margin-top: 2px;
+  }
+  .tog-btn:active { transform: scale(0.97); }
+  .tog-btn.active-gold {
+    background: var(--gold-dim);
+    border-color: var(--gold);
+    color: var(--gold2);
+  }
+  .tog-btn.active-red {
+    background: var(--red-dim);
+    border-color: var(--red);
+    color: var(--red2);
+  }
+  .tog-btn.active-blue {
+    background: var(--blue-dim);
+    border-color: var(--blue);
+    color: #8ab2ff;
+  }
+
+  /* ─── Number inputs ─── */
+  .num-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 1.1rem;
+  }
+  .num-box {
+    flex: 1;
+    background: var(--bg3);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .num-box-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text3);
+    padding: 0.5rem 1rem 0;
+    display: block;
+  }
+  .num-display {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.3rem 0.6rem 0.5rem;
+  }
+  .num-val {
+    font-family: var(--font-serif);
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text);
+    min-width: 3ch;
+    text-align: center;
+  }
+  .num-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    color: var(--text);
+    width: 34px; height: 34px;
+    border-radius: 7px;
+    font-size: 1.3rem;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.12s;
+    user-select: none;
+    font-weight: 300;
+  }
+  .num-btn:active { background: var(--surface); transform: scale(0.93); }
+
+  /* ─── Divider ─── */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 1.1rem 0;
+  }
+
+  /* ─── Fu quick picks ─── */
+  .fu-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    margin-bottom: 1.1rem;
+  }
+  .fu-chip {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    color: var(--text2);
+    border-radius: 8px;
+    padding: 0.45rem 0.2rem;
+    font-size: 0.82rem;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.12s;
+  }
+  .fu-chip:active { transform: scale(0.95); }
+  .fu-chip.active {
+    background: var(--blue-dim);
+    border-color: var(--blue);
+    color: #8ab2ff;
+  }
+
+  /* ─── Calculate button ─── */
+  .calc-btn {
+    width: 100%;
+    background: linear-gradient(135deg, #c49832 0%, #e8b84b 50%, #c49832 100%);
+    border: none;
+    border-radius: 12px;
+    color: #1a1000;
+    font-family: var(--font-serif);
+    font-size: 1.1rem;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    padding: 1rem;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.15s;
+    box-shadow: 0 4px 20px rgba(212,168,67,0.3);
+  }
+  .calc-btn:active { transform: scale(0.98); box-shadow: 0 2px 10px rgba(212,168,67,0.2); }
+  .calc-btn::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 50%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+    animation: shimmer 2.5s infinite;
+  }
+  @keyframes shimmer { to { left: 200%; } }
+
+  /* ─── Result panel ─── */
+  .result-card {
+    width: calc(100% - 2rem);
+    max-width: 480px;
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius-lg);
+    margin: 0 1rem 0.75rem;
+    overflow: hidden;
+    display: none;
+  }
+  .result-card.show { display: block; animation: slideUp 0.3s ease; }
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .result-header {
+    background: var(--bg3);
+    padding: 0.85rem 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+  }
+  .result-header .label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text3);
+  }
+  .result-header .tags {
+    display: flex;
+    gap: 6px;
+  }
+  .tag {
+    font-size: 0.68rem;
+    padding: 0.18rem 0.55rem;
+    border-radius: 20px;
+    font-weight: 700;
+  }
+  .tag-gold { background: var(--gold-dim); color: var(--gold2); border: 1px solid var(--gold); }
+  .tag-red  { background: var(--red-dim); color: var(--red2); border: 1px solid var(--red); }
+  .tag-blue { background: var(--blue-dim); color: #8ab2ff; border: 1px solid var(--blue); }
+
+  .main-score {
+    padding: 1.25rem;
+    text-align: center;
+  }
+  .score-num {
+    font-family: var(--font-serif);
+    font-size: 3.2rem;
+    font-weight: 900;
+    color: var(--gold2);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  .score-unit {
+    font-size: 1rem;
+    color: var(--text2);
+    margin-left: 4px;
+  }
+  .score-desc {
+    font-size: 0.8rem;
+    color: var(--text3);
+    margin-top: 0.4rem;
+  }
+
+  /* Tsumo breakdown */
+  .tsumo-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    padding: 0 1.25rem 1rem;
+  }
+  .tsumo-item {
+    background: var(--bg3);
+    border-radius: 10px;
+    padding: 0.7rem;
+    text-align: center;
+  }
+  .tsumo-item .t-label { font-size: 0.68rem; color: var(--text3); margin-bottom: 4px; }
+  .tsumo-item .t-val {
+    font-family: var(--font-serif);
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .tsumo-item.dealer .t-val { color: var(--red2); }
+  .tsumo-item.non-dealer .t-val { color: var(--gold2); }
+
+  /* Score table */
+  .score-table-card {
+    width: calc(100% - 2rem);
+    max-width: 480px;
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius-lg);
+    margin: 0 1rem 0.75rem;
+    overflow: hidden;
+  }
+  .table-header {
+    background: var(--bg3);
+    padding: 0.75rem 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+  }
+  .table-title {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text3);
+  }
+  .table-tabs {
+    display: flex;
+    gap: 4px;
+  }
+  .table-tab {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text3);
+    border-radius: 6px;
+    padding: 0.2rem 0.6rem;
+    font-size: 0.72rem;
+    cursor: pointer;
+    transition: all 0.12s;
+  }
+  .table-tab.active {
+    background: var(--gold-dim);
+    border-color: var(--gold);
+    color: var(--gold2);
+  }
+  .score-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+  }
+  .score-table th {
+    background: var(--bg3);
+    color: var(--text3);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.5rem 0.6rem;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .score-table th:first-child { text-align: left; padding-left: 1rem; }
+  .score-table td {
+    padding: 0.5rem 0.6rem;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    color: var(--text2);
+    font-size: 0.8rem;
+  }
+  .score-table td:first-child { text-align: left; padding-left: 1rem; font-weight: 500; color: var(--text); }
+  .score-table tr:last-child td { border-bottom: none; }
+  .score-table tr.highlight td { background: var(--gold-dim); }
+  .score-table tr.highlight td:first-child { color: var(--gold2); }
+  .score-table .mangan { color: var(--red2); font-weight: 700; }
+  .score-table .yakuman { color: var(--gold2); font-weight: 700; }
+  /* ロン上段／ツモ下段 2行表示 */
+  .score-table .cell-ron  { display:block; color:var(--text); font-size:0.75rem; line-height:1.4; }
+  .score-table .cell-tsumo{ display:block; color:var(--text3); font-size:0.65rem; line-height:1.4; border-top:1px solid var(--border); margin-top:1px; padding-top:1px; }
+  .score-table .cell-tsumo.mangan-t { color:var(--red2); }
+  .score-table td.mangan .cell-ron  { color:var(--red2); }
+  .score-table td.mangan .cell-tsumo{ color:rgba(224,85,85,0.6); }
+
+  /* ─── History panel ─── */
+  .history-panel {
+    display: none;
+    width: calc(100% - 2rem);
+    max-width: 480px;
+    margin: 0 1rem;
+  }
+  .history-panel.show { display: block; }
+  .history-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.85rem 1.1rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    animation: slideUp 0.2s ease;
+  }
+  .history-left .h-score {
+    font-family: var(--font-serif);
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--gold2);
+  }
+  .history-left .h-info {
+    font-size: 0.72rem;
+    color: var(--text3);
+    margin-top: 2px;
+  }
+  .history-right {
+    text-align: right;
+  }
+  .history-right .h-time {
+    font-size: 0.68rem;
+    color: var(--text3);
+  }
+  .h-tag {
+    font-size: 0.65rem;
+    padding: 0.12rem 0.4rem;
+    border-radius: 4px;
+    font-weight: 700;
+    margin-left: 4px;
+  }
+  .clear-btn {
+    width: 100%;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text3);
+    border-radius: 10px;
+    padding: 0.65rem;
+    font-family: var(--font-sans);
+    font-size: 0.8rem;
+    cursor: pointer;
+    margin-top: 0.5rem;
+    transition: all 0.15s;
+  }
+  .clear-btn:active { border-color: var(--red); color: var(--red2); }
+  .empty-state {
+    text-align: center;
+    padding: 2rem 1rem;
+    color: var(--text3);
+    font-size: 0.85rem;
+  }
+
+  /* ─── Section wrapper ─── */
+  .main-view, .history-view { width: 100%; display: flex; flex-direction: column; align-items: center; }
+  .history-view { display: none; }
+  .history-view.show { display: flex; }
+  .main-view.hidden { display: none; }
+  .rank-view.hidden { display: none; }
+
+  /* ─── Dividers/spacers ─── */
+  .section-gap { height: 0.5rem; }
+
+  /* ─── Yakuman special ─── */
+  .yakuman-banner {
+    background: linear-gradient(135deg, #6b4000, #c49832, #6b4000);
+    border-radius: 10px;
+    padding: 0.75rem;
+    text-align: center;
+    margin: 0 1.25rem 1rem;
+    font-family: var(--font-serif);
+    font-size: 1rem;
+    font-weight: 900;
+    color: #fff8e0;
+    letter-spacing: 0.15em;
+    display: none;
+  }
+  .yakuman-banner.show { display: block; }
+
+  /* ─── Mangan label ─── */
+  .mangan-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--red2);
+    text-align: center;
+    padding: 0 1.25rem 0.5rem;
+    display: none;
+  }
+  .mangan-label.show { display: block; }
+
+  /* ─── Tab bar ─── */
+  .tab-bar {
+    width: 100%;
+    max-width: 480px;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    background: var(--surface);
+    border-bottom: 1px solid var(--border2);
+    margin-bottom: 0.25rem;
+  }
+  .tab-item {
+    background: transparent;
+    border: none;
+    color: var(--text3);
+    padding: 0.65rem 0.5rem;
+    font-family: var(--font-sans);
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    transition: all 0.15s;
+    position: relative;
+  }
+  .tab-item::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 20%; right: 20%;
+    height: 2px;
+    background: var(--gold);
+    border-radius: 2px 2px 0 0;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .tab-item.active { color: var(--gold2); }
+  .tab-item.active::after { opacity: 1; }
+  .tab-icon { font-size: 1.1rem; }
+  .tab-label { font-size: 0.7rem; }
+
+  /* ─── Ranking page ─── */
+  .rank-view { width: 100%; display: flex; flex-direction: column; align-items: center; display: none; }
+  .rank-view.show { display: flex; }
+
+  .player-card {
+    width: calc(100% - 2rem);
+    max-width: 480px;
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius-lg);
+    margin: 0.5rem 1rem;
+    overflow: hidden;
+    position: relative;
+  }
+  .player-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--gold), var(--red), var(--gold));
+    opacity: 0.6;
+  }
+  .player-card-header {
+    padding: 0.85rem 1.1rem 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .player-rank-badge {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-serif);
+    font-size: 0.85rem;
+    font-weight: 900;
+    flex-shrink: 0;
+  }
+  .rank-1 { background: #d4a843; color: #1a1000; }
+  .rank-2 { background: #9ca3af; color: #fff; }
+  .rank-3 { background: #c2804a; color: #fff; }
+  .rank-4 { background: var(--bg3); color: var(--text3); border: 1px solid var(--border2); }
+
+  .player-name-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0 1.1rem;
+    margin-bottom: 0.6rem;
+  }
+  .player-name-input {
+    flex: 1;
+    background: var(--bg3);
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 0.55rem 0.75rem;
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 500;
+    outline: none;
+    transition: border-color 0.15s;
+    -webkit-appearance: none;
+  }
+  .player-name-input:focus { border-color: var(--gold); }
+  .player-name-input::placeholder { color: var(--text3); }
+
+  .player-score-row {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 8px;
+    padding: 0 1.1rem 0.9rem;
+  }
+  .score-input-wrap {
+    background: var(--bg3);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .score-input-wrap label {
+    display: block;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text3);
+    padding: 0.4rem 0.75rem 0;
+  }
+  .score-stepper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.2rem 0.5rem 0.4rem;
+  }
+  .ss-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    color: var(--text);
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    user-select: none;
+    transition: all 0.12s;
+    font-weight: 300;
+  }
+  .ss-btn:active { transform: scale(0.92); }
+  .ss-val {
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text);
+    min-width: 3ch;
+    text-align: center;
+  }
+  .score-direct-input {
+    background: transparent;
+    border: none;
+    color: var(--text);
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    font-weight: 700;
+    width: 100%;
+    text-align: center;
+    outline: none;
+    -webkit-appearance: none;
+  }
+  .score-sep {
+    color: var(--text3);
+    font-size: 0.75rem;
+    text-align: center;
+  }
+
+  /* Settings card */
+  .settings-card {
+    width: calc(100% - 2rem);
+    max-width: 480px;
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius-lg);
+    margin: 0 1rem 0.5rem;
+    padding: 1.1rem;
+  }
+  .settings-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.9rem;
+  }
+  .settings-row:last-child { margin-bottom: 0; }
+  .settings-label {
+    font-size: 0.82rem;
+    color: var(--text2);
+    font-weight: 500;
+  }
+  .settings-chips {
+    display: flex;
+    gap: 5px;
+  }
+  .s-chip {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    color: var(--text2);
+    border-radius: 7px;
+    padding: 0.3rem 0.6rem;
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: all 0.12s;
+    font-weight: 500;
+  }
+  .s-chip:active { transform: scale(0.95); }
+  .s-chip.active-gold { background: var(--gold-dim); border-color: var(--gold); color: var(--gold2); }
+  .s-chip.active-blue { background: var(--blue-dim); border-color: var(--blue); color: #8ab2ff; }
+
+  /* Rank result */
+  .rank-result-card {
+    width: calc(100% - 2rem);
+    max-width: 480px;
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius-lg);
+    margin: 0 1rem 0.75rem;
+    overflow: hidden;
+    display: none;
+  }
+  .rank-result-card.show { display: block; animation: slideUp 0.3s ease; }
+
+  .rr-header {
+    background: var(--bg3);
+    padding: 0.85rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .rr-header .rr-title {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text3);
+  }
+  .rr-setting-tags { display: flex; gap: 5px; }
+
+  .rr-row {
+    display: grid;
+    grid-template-columns: 36px 1fr auto auto auto;
+    align-items: center;
+    gap: 8px;
+    padding: 0.7rem 1.1rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .rr-row:last-child { border-bottom: none; }
+  .rr-row.winner { background: rgba(212,168,67,0.06); }
+  .rr-name {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .rr-raw { font-size: 0.78rem; color: var(--text3); text-align: right; }
+  .rr-uma { font-size: 0.78rem; text-align: right; }
+  .rr-uma.pos { color: var(--green); }
+  .rr-uma.neg { color: var(--red2); }
+  .rr-total {
+    font-family: var(--font-serif);
+    font-size: 1rem;
+    font-weight: 700;
+    text-align: right;
+    min-width: 5ch;
+  }
+  .rr-total.pos { color: var(--gold2); }
+  .rr-total.neg { color: var(--red2); }
+
+  .rr-breakdown {
+    padding: 0.75rem 1.25rem;
+    background: var(--bg3);
+    font-size: 0.72rem;
+    color: var(--text3);
+    line-height: 2;
+  }
+  .rr-breakdown span { color: var(--text2); }
+
+  /* ─── Chip page ─── */
+  .chip-view  { width:100%; display:none; flex-direction:column; align-items:center; }
+  .chip-view.show { display:flex; }
+  .table-view { width:100%; display:none; flex-direction:column; align-items:center; }
+  .table-view.show { display:flex; }
+
+  .page-card {
+    width: calc(100% - 2rem);
+    max-width: 480px;
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius-lg);
+    margin: 0.5rem 1rem;
+    padding: 1.1rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .page-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--gold), var(--red), var(--gold));
+    opacity: 0.5;
+  }
+  .page-card-title {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 0.85rem;
+  }
+
+  /* chip player rows */
+  .chip-player-row {
+    display: grid;
+    grid-template-columns: 28px 1fr 36px auto 36px;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 0.55rem;
+  }
+  .chip-player-row:last-child { margin-bottom: 0; }
+  .cp-name {
+    font-size: 0.88rem;
+    color: var(--text);
+    font-weight: 500;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .cp-count {
+    font-family: var(--font-serif);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text);
+    text-align: center;
+    min-width: 2ch;
+  }
+  .cp-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    color: var(--text);
+    width: 32px; height: 32px;
+    border-radius: 7px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    user-select: none;
+    transition: all 0.12s;
+  }
+  .cp-btn:active { transform: scale(0.92); background: var(--surface); }
+
+  /* chip result */
+  .chip-result-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.55rem 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.88rem;
+  }
+  .chip-result-row:last-child { border-bottom: none; }
+  .cr-name { color: var(--text2); }
+  .cr-chips { color: var(--text3); font-size: 0.78rem; }
+  .cr-yen {
+    font-family: var(--font-serif);
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
+  .cr-yen.pos { color: var(--gold2); }
+  .cr-yen.neg { color: var(--red2); }
+  .cr-yen.zero { color: var(--text3); }
+
+  /* chip history */
+  .chip-hist-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.8rem 1.1rem;
+    margin-bottom: 0.45rem;
+    cursor: pointer;
+    animation: slideUp 0.2s ease;
+  }
+  .chi-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 0.4rem;
+  }
+  .chi-setting { font-size:0.72rem; color:var(--text2); font-weight:500; }
+  .chi-date { font-size:0.65rem; color:var(--text3); }
+  .chi-players { display:grid; grid-template-columns:1fr 1fr; gap:3px; }
+  .chi-player {
+    display:flex; align-items:center; gap:5px; font-size:0.75rem;
+  }
+  .chi-dot {
+    width:7px; height:7px; border-radius:50%; flex-shrink:0;
+  }
+  .chi-pname { color:var(--text2); flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .chi-pts { font-weight:700; }
+  .chi-pts.pos { color:var(--gold2); }
+  .chi-pts.neg { color:var(--red2); }
+
+  /* ─── Table fee page ─── */
+  .fee-section-title {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 0.6rem;
+  }
+  .fee-row {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 0.7rem;
+  }
+  .fee-row:last-child { margin-bottom: 0; }
+  .fee-label { font-size:0.85rem; color:var(--text2); font-weight:500; }
+  .fee-input-wrap {
+    display: flex; align-items: center; gap: 6px;
+  }
+  .fee-input {
+    background: var(--bg3);
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: var(--font-serif);
+    font-size: 1rem;
+    font-weight: 700;
+    padding: 0.4rem 0.6rem;
+    width: 90px;
+    text-align: center;
+    outline: none;
+    -webkit-appearance: none;
+  }
+  .fee-input:focus { border-color: var(--gold); }
+  .fee-unit { font-size:0.78rem; color:var(--text3); }
+  .fee-stepper {
+    display: flex; align-items: center; gap: 4px;
+  }
+  .fee-step-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    color: var(--text);
+    width: 30px; height: 30px;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    user-select: none; transition: all 0.12s;
+  }
+  .fee-step-btn:active { transform: scale(0.92); }
+  .fee-step-val {
+    font-family: var(--font-serif);
+    font-size: 1.05rem;
+    font-weight: 700;
+    min-width: 3ch;
+    text-align: center;
+    color: var(--text);
+  }
+
+  /* extra items */
+  .extra-item-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 0.4rem;
+  }
+  .extra-name-input {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 0.4rem 0.6rem;
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    outline: none;
+    width: 100%;
+  }
+  .extra-name-input:focus { border-color: var(--gold); }
+  .extra-price-input {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 0.4rem 0.5rem;
+    color: var(--text);
+    font-family: var(--font-serif);
+    font-size: 0.88rem;
+    width: 80px;
+    text-align: right;
+    outline: none;
+    -webkit-appearance: none;
+  }
+  .extra-price-input:focus { border-color: var(--gold); }
+  .extra-del-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text3);
+    width: 28px; height: 28px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .extra-del-btn:active { border-color: var(--red); color: var(--red2); }
+  .add-extra-btn {
+    width: 100%;
+    background: transparent;
+    border: 1px dashed var(--border2);
+    border-radius: 8px;
+    color: var(--text3);
+    font-size: 0.82rem;
+    padding: 0.5rem;
+    cursor: pointer;
+    margin-top: 0.3rem;
+    transition: all 0.15s;
+  }
+  .add-extra-btn:active { border-color: var(--gold); color: var(--gold2); }
+
+  /* discount toggle */
+  .discount-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    margin-bottom: 0.8rem;
+  }
+  .discount-btn {
+    background: var(--bg3);
+    border: 1.5px solid var(--border);
+    color: var(--text2);
+    border-radius: 9px;
+    padding: 0.5rem 0.5rem;
+    font-size: 0.82rem;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.12s;
+    font-weight: 500;
+  }
+  .discount-btn .sub { display:block; font-size:0.62rem; color:var(--text3); margin-top:2px; }
+  .discount-btn.active { background:var(--gold-dim); border-color:var(--gold); color:var(--gold2); }
+  .discount-btn.active .sub { color:rgba(212,168,67,0.6); }
+
+  /* fee result */
+  .fee-result-card {
+    width: calc(100% - 2rem);
+    max-width: 480px;
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius-lg);
+    margin: 0 1rem 0.75rem;
+    overflow: hidden;
+    display: none;
+  }
+  .fee-result-card.show { display:block; animation: slideUp 0.3s ease; }
+  .fee-result-header {
+    background: var(--bg3);
+    padding: 0.8rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .fee-result-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.65rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .fee-result-row:last-child { border-bottom: none; }
+  .frr-left { display:flex; align-items:center; gap:8px; }
+  .frr-name { font-size:0.88rem; color:var(--text); font-weight:500; }
+  .frr-disc { font-size:0.68rem; padding:0.1rem 0.4rem; border-radius:4px; background:var(--blue-dim); color:#8ab2ff; border:1px solid var(--blue); }
+  .frr-amount {
+    font-family: var(--font-serif);
+    font-size: 1.15rem; font-weight:700; color:var(--text);
+  }
+  .fee-total-bar {
+    background: linear-gradient(135deg, rgba(212,168,67,0.08), rgba(212,168,67,0.03));
+    border-top: 1px solid var(--gold);
+    padding: 0.75rem 1.25rem;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .ftb-label { font-size:0.78rem; color:var(--text3); }
+  .ftb-val {
+    font-family: var(--font-serif);
+    font-size: 1.25rem; font-weight:900; color:var(--gold2);
+  }
+  .fee-breakdown {
+    padding: 0.6rem 1.25rem;
+    background: var(--bg3);
+    font-size: 0.72rem; color:var(--text3); line-height:1.9;
+  }
+  .fee-breakdown span { color:var(--text2); }
+
+  /* fee history */
+  .fee-hist-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.8rem 1.1rem;
+    margin-bottom: 0.45rem;
+    cursor: pointer;
+    animation: slideUp 0.2s ease;
+  }
+  .fhi-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:0.4rem; }
+  .fhi-title { font-size:0.78rem; color:var(--text2); font-weight:500; }
+  .fhi-date { font-size:0.65rem; color:var(--text3); }
+  .fhi-players { display:grid; grid-template-columns:1fr 1fr; gap:3px; }
+  .fhi-player { display:flex; align-items:center; justify-content:space-between; font-size:0.75rem; color:var(--text2); }
+  .fhi-amt { font-weight:700; color:var(--text); font-family:var(--font-serif); }
+
+  /* ─── Settle page ─── */
+  .settle-view { width:100%; display:none; flex-direction:column; align-items:center; }
+  .settle-view.show { display:flex; }
+
+  .settle-section {
+    width: calc(100% - 2rem);
+    max-width: 480px;
+    margin: 0 1rem 0.5rem;
+  }
+  .settle-section-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 0.4rem;
+  }
+  .settle-section-label {
+    font-size: 0.68rem; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--text3);
+  }
+  .settle-toggle {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text3);
+    border-radius: 6px;
+    padding: 0.18rem 0.55rem;
+    font-size: 0.68rem;
+    cursor: pointer;
+    transition: all 0.12s;
+  }
+  .settle-toggle.on { background:var(--gold-dim); border-color:var(--gold); color:var(--gold2); }
+
+  /* rank-rate selector */
+  .rate-chips {
+    display: flex; flex-wrap: wrap; gap: 5px;
+    margin-bottom: 0.6rem;
+  }
+  .rate-chip {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    color: var(--text2);
+    border-radius: 7px;
+    padding: 0.3rem 0.6rem;
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: all 0.12s;
+    font-weight: 500;
+  }
+  .rate-chip.active { background:var(--gold-dim); border-color:var(--gold); color:var(--gold2); }
+  .rate-chip:active { transform:scale(0.95); }
+
+  /* settle player block */
+  .settle-player-block {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+    position: relative;
+  }
+  .settle-player-block::before {
+    content:''; position:absolute; top:0;left:0;right:0;height:2px;
+    background:linear-gradient(90deg,var(--gold),var(--red),var(--gold)); opacity:0.4;
+  }
+  .spb-header {
+    display: flex; align-items: center; gap: 10px;
+    padding: 0.75rem 1rem 0.5rem;
+  }
+  .spb-name {
+    font-size: 0.95rem; font-weight: 700; color: var(--text); flex:1;
+  }
+  .spb-total-badge {
+    font-family: var(--font-serif);
+    font-size: 1rem; font-weight: 900;
+    padding: 0.2rem 0.6rem;
+    border-radius: 7px;
+  }
+  .spb-total-badge.pos { background:var(--gold-dim); color:var(--gold2); }
+  .spb-total-badge.neg { background:var(--red-dim);  color:var(--red2);  }
+  .spb-total-badge.zero{ background:var(--bg3);       color:var(--text3); }
+
+  .spb-rows {
+    padding: 0 1rem 0.6rem;
+  }
+  .spb-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.3rem 0;
+    border-top: 1px solid var(--border);
+    font-size: 0.8rem;
+  }
+  .spb-row:first-child { border-top: none; }
+  .spb-row-label { color:var(--text3); }
+  .spb-row-val { font-weight:600; color:var(--text2); }
+  .spb-row-val.pos { color:var(--gold2); }
+  .spb-row-val.neg { color:var(--red2); }
+
+  /* grand total */
+  .settle-grand-card {
+    background: linear-gradient(135deg, rgba(212,168,67,0.1), rgba(212,168,67,0.04));
+    border: 1px solid var(--gold);
+    border-radius: var(--radius-lg);
+    padding: 1rem 1.25rem;
+    margin-bottom: 0.5rem;
+  }
+  .sgc-title { font-size:0.68rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text3); margin-bottom:0.6rem; }
+  .sgc-row {
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 0.35rem 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.88rem;
+  }
+  .sgc-row:last-child { border-bottom:none; }
+  .sgc-name { color:var(--text); font-weight:500; }
+  .sgc-val {
+    font-family:var(--font-serif); font-size:1.05rem; font-weight:700;
+  }
+  .sgc-val.pos { color:var(--gold2); }
+  .sgc-val.neg { color:var(--red2); }
+  .sgc-val.zero { color:var(--text3); }
+
+  /* payment arrows */
+  .payment-card {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+  }
+  .payment-header {
+    background: var(--bg3);
+    padding: 0.65rem 1rem;
+    font-size: 0.68rem; font-weight:700;
+    letter-spacing:0.1em; text-transform:uppercase; color:var(--text3);
+    border-bottom:1px solid var(--border);
+  }
+  .payment-row {
+    display:flex; align-items:center; gap:8px;
+    padding: 0.6rem 1rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.85rem;
+  }
+  .payment-row:last-child { border-bottom:none; }
+  .pr-from { color:var(--red2); font-weight:600; flex:1; }
+  .pr-arrow { color:var(--text3); font-size:0.8rem; }
+  .pr-to { color:var(--green); font-weight:600; flex:1; text-align:right; }
+  .pr-amount {
+    font-family:var(--font-serif); font-size:1rem; font-weight:700;
+    color:var(--text); background:var(--bg3); border-radius:6px;
+    padding:0.15rem 0.5rem; white-space:nowrap;
+  }
+
+  /* ─── Hamburger menu ─── */
+  .hamburger-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    width: 36px; height: 36px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 4px; cursor: pointer;
+    flex-shrink: 0;
+    transition: all 0.15s;
+  }
+  .hamburger-btn:active { opacity: 0.7; transform: scale(0.95); }
+  .hamburger-btn span {
+    display: block; width: 16px; height: 2px;
+    background: var(--text2); border-radius: 1px;
+    transition: all 0.2s;
+  }
+  .hamburger-btn.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+  .hamburger-btn.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+  .hamburger-btn.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+  .accordion-menu {
+    position: fixed;
+    top: 0; right: 0;
+    width: 220px;
+    background: var(--surface);
+    border-left: 1px solid var(--border2);
+    border-bottom: 1px solid var(--border2);
+    border-radius: 0 0 0 16px;
+    z-index: 200;
+    transform: translateX(100%);
+    transition: transform 0.25s cubic-bezier(.32,1,.6,1);
+    box-shadow: -4px 4px 24px rgba(0,0,0,0.4);
+    padding-bottom: 0.5rem;
+  }
+  .accordion-menu.open { transform: translateX(0); }
+  .accordion-overlay {
+    position: fixed; inset: 0; z-index: 199;
+    background: rgba(0,0,0,0.4);
+    display: none;
+  }
+  .accordion-overlay.open { display: block; }
+
+  .acc-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1rem 1rem 0.5rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 0.25rem;
+  }
+  .acc-title {
+    font-family: var(--font-serif);
+    font-size: 0.85rem; font-weight: 900;
+    color: var(--gold2); letter-spacing: 0.05em;
+  }
+  .acc-close {
+    background: transparent; border: none;
+    color: var(--text3); font-size: 1.1rem;
+    cursor: pointer; padding: 0.1rem 0.3rem;
+  }
+  .acc-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 0.7rem 1.1rem;
+    color: var(--text2); font-size: 0.88rem;
+    cursor: pointer; transition: all 0.12s;
+    border-radius: 0;
+    background: transparent; border: none;
+    width: 100%; text-align: left;
+    font-family: var(--font-sans);
+    font-weight: 500;
+  }
+  .acc-item:active { background: var(--surface2); }
+  .acc-item.active { color: var(--gold2); background: var(--gold-dim); }
+  .acc-item .acc-icon { font-size: 1rem; width: 20px; text-align: center; flex-shrink: 0; }
+  .acc-item .acc-label { flex: 1; }
+  .acc-divider { height: 1px; background: var(--border); margin: 0.25rem 0.75rem; }
+
+  /* ─── Footer ─── */
+  .app-footer {
+    width: 100%;
+    max-width: 480px;
+    text-align: center;
+    padding: 1.25rem 1rem 2rem;
+    font-size: 0.65rem;
+    color: var(--text3);
+    letter-spacing: 0.08em;
+    font-family: var(--font-sans);
+  }
+  .app-footer .footer-logo {
+    color: var(--gold);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+  }
+
+  /* ─── Chip preset ─── */
+  .chip-preset-row {
+    display: flex; gap: 6px; flex-wrap: wrap;
+    margin-bottom: 0.6rem;
+  }
+  .chip-preset-btn {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    color: var(--text2);
+    border-radius: 7px;
+    padding: 0.3rem 0.65rem;
+    font-size: 0.8rem; font-weight: 600;
+    cursor: pointer; transition: all 0.12s;
+  }
+  .chip-preset-btn:active { transform: scale(0.95); }
+  .chip-preset-btn.active { background:var(--gold-dim); border-color:var(--gold); color:var(--gold2); }
+
+  /* ─── Edit modal ─── */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.72);
+    z-index: 100;
+    display: flex; align-items: flex-end; justify-content: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.2s;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal-sheet {
+    background: var(--surface);
+    border-radius: 20px 20px 0 0;
+    border: 1px solid var(--border2);
+    width: 100%; max-width: 480px;
+    padding: 0 0 2rem;
+    transform: translateY(30px);
+    transition: transform 0.25s cubic-bezier(.32,1.1,.6,1);
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  .modal-overlay.open .modal-sheet { transform: translateY(0); }
+  .modal-handle {
+    width: 36px; height: 4px;
+    background: var(--border2); border-radius: 2px;
+    margin: 12px auto 0;
+  }
+  .modal-title {
+    font-family: var(--font-serif);
+    font-size: 1rem; font-weight: 700;
+    color: var(--gold2);
+    padding: 1rem 1.25rem 0.25rem;
+  }
+  .modal-sub {
+    font-size: 0.72rem; color: var(--text3);
+    padding: 0 1.25rem 0.75rem;
+  }
+  .modal-divider { height: 1px; background: var(--border); margin: 0.5rem 0; }
+  .edit-player-row {
+    display: grid;
+    grid-template-columns: 26px 1fr auto;
+    align-items: center;
+    gap: 8px;
+    padding: 0.6rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .edit-player-row:last-of-type { border-bottom: none; }
+  .edit-rank-badge {
+    width: 24px; height: 24px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.68rem; font-weight: 900; flex-shrink: 0;
+  }
+  .edit-name {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 0.4rem 0.6rem;
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    outline: none;
+    width: 100%;
+  }
+  .edit-name:focus { border-color: var(--gold); }
+  .edit-score-wrap {
+    display: flex; align-items: center; gap: 4px;
+  }
+  .edit-score {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 0.4rem 0.5rem;
+    color: var(--text);
+    font-family: var(--font-serif);
+    font-size: 0.95rem; font-weight: 700;
+    width: 7ch;
+    text-align: center;
+    outline: none;
+  }
+  .edit-score:focus { border-color: var(--gold); }
+  .modal-recalc-btn {
+    width: calc(100% - 2.5rem); margin: 0.75rem 1.25rem 0;
+    background: linear-gradient(135deg,#c49832,#e8b84b,#c49832);
+    border: none; border-radius: 10px;
+    color: #1a1000; font-family: var(--font-serif);
+    font-size: 0.95rem; font-weight: 900; letter-spacing: 0.08em;
+    padding: 0.8rem; cursor: pointer;
+    box-shadow: 0 3px 12px rgba(212,168,67,0.3);
+  }
+  .modal-recalc-btn:active { opacity: 0.85; transform: scale(0.98); }
+  .modal-delete-btn {
+    width: calc(100% - 2.5rem); margin: 0.5rem 1.25rem 0;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 10px; color: var(--red2);
+    font-family: var(--font-sans); font-size: 0.82rem;
+    padding: 0.65rem; cursor: pointer;
+    transition: border-color 0.15s;
+  }
+  .modal-delete-btn:active { border-color: var(--red); }
+  .modal-cancel-btn {
+    width: calc(100% - 2.5rem); margin: 0.4rem 1.25rem 0;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 10px; color: var(--text3);
+    font-family: var(--font-sans); font-size: 0.82rem;
+    padding: 0.65rem; cursor: pointer;
+  }
+  .modal-result-preview {
+    margin: 0.5rem 1.25rem 0;
+    background: var(--bg3);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .mrp-row {
+    display: grid;
+    grid-template-columns: 24px 1fr auto auto auto;
+    align-items: center; gap: 6px;
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.8rem;
+  }
+  .mrp-row:last-child { border-bottom: none; }
+
+  /* Rank history */
+  .rank-hist-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.85rem 1.1rem;
+    margin-bottom: 0.5rem;
+    animation: slideUp 0.2s ease;
+  }
+  .rh-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+  }
+  .rh-date { font-size: 0.68rem; color: var(--text3); }
+  .rh-players {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+  }
+  .rh-player {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.78rem;
+  }
+  .rh-player .rh-rank { width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; font-weight: 900; flex-shrink: 0; }
+  .rh-player .rh-pname { color: var(--text2); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .rh-player .rh-pts { font-weight: 700; }
+  .rh-player .rh-pts.pos { color: var(--gold2); }
+  .rh-player .rh-pts.neg { color: var(--red2); }
+
+  /* Score total display */
+  .score-total-bar {
+    background: var(--bg3);
+    border-top: 1px solid var(--border);
+    padding: 0.5rem 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.78rem;
+  }
+  .score-total-bar .stb-label { color: var(--text3); }
+  .score-total-bar .stb-val { font-weight: 700; }
+  .stb-ok { color: var(--green); }
+  .stb-ng { color: var(--red2); }
+
+  .install-bar {
+    width: calc(100% - 2rem);
+    max-width: 480px;
+    background: var(--surface);
+    border: 1px solid var(--gold);
+    border-radius: var(--radius);
+    padding: 0.75rem 1rem;
+    margin: 0 1rem 0.5rem;
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .install-bar.show { display: flex; }
+  .install-bar p { font-size: 0.78rem; color: var(--text2); flex: 1; }
+  .install-bar-btn {
+    background: var(--gold);
+    border: none;
+    border-radius: 7px;
+    color: #1a1000;
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 0.4rem 0.8rem;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .install-dismiss {
+    background: transparent;
+    border: none;
+    color: var(--text3);
+    cursor: pointer;
+    font-size: 1.1rem;
+    padding: 0 0.2rem;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">
+    <div class="logo-tile">中</div>
+    麻雀計算機
+  </div>
+  <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleAccordion()" aria-label="メニュー">
+    <span></span><span></span><span></span>
+  </button>
+</div>
+
+<!-- Accordion overlay -->
+<div class="accordion-overlay" id="accOverlay" onclick="closeAccordion()"></div>
+
+<!-- Accordion menu -->
+<div class="accordion-menu" id="accordionMenu">
+  <div class="acc-header">
+    <span class="acc-title">麻雀計算機</span>
+    <button class="acc-close" onclick="closeAccordion()">✕</button>
+  </div>
+  <button class="acc-item active" id="acc-score" onclick="accNav('score')">
+    <span class="acc-icon">🀄</span>
+    <span class="acc-label">点数計算</span>
+  </button>
+  <button class="acc-item" id="acc-rank" onclick="accNav('rank')">
+    <span class="acc-icon">🏆</span>
+    <span class="acc-label">順位計算</span>
+  </button>
+  <button class="acc-item" id="acc-chip" onclick="accNav('chip')">
+    <span class="acc-icon" style="font-family:var(--font-serif);font-weight:900;font-size:0.95rem">C</span>
+    <span class="acc-label">チップ</span>
+  </button>
+  <button class="acc-item" id="acc-table" onclick="accNav('table')">
+    <span class="acc-icon">🏠</span>
+    <span class="acc-label">場代</span>
+  </button>
+  <div class="acc-divider"></div>
+  <button class="acc-item" id="acc-settle" onclick="accNav('settle')">
+    <span class="acc-icon">💴</span>
+    <span class="acc-label">精算</span>
+  </button>
+  <button class="acc-item" id="acc-history" onclick="accNav('history')">
+    <span class="acc-icon">📋</span>
+    <span class="acc-label">履歴</span>
+  </button>
+</div>
+
+<!-- Tab bar -->
+<div class="tab-bar" id="tabBar">
+  <button class="tab-item active" id="tab-score" onclick="switchTab('score')">
+    <span class="tab-icon">🀄</span>
+    <span class="tab-label">点数計算</span>
+  </button>
+  <button class="tab-item" id="tab-rank" onclick="switchTab('rank')">
+    <span class="tab-icon">🏆</span>
+    <span class="tab-label">順位計算</span>
+  </button>
+  <button class="tab-item" id="tab-chip" onclick="switchTab('chip')">
+    <span class="tab-icon" style="font-family:var(--font-serif);font-weight:900;font-size:1rem">C</span>
+    <span class="tab-label">チップ</span>
+  </button>
+  <button class="tab-item" id="tab-table" onclick="switchTab('table')">
+    <span class="tab-icon">🏠</span>
+    <span class="tab-label">場代</span>
+  </button>
+  <button class="tab-item" id="tab-settle" onclick="switchTab('settle')">
+    <span class="tab-icon" style="font-size:0.95rem">💴</span>
+    <span class="tab-label">精算</span>
+  </button>
+  <button class="tab-item" id="tab-history" onclick="switchTab('history')">
+    <span class="tab-icon" style="font-size:0.95rem">📋</span>
+    <span class="tab-label">履歴</span>
+  </button>
+</div>
+
+<!-- Install prompt -->
+<div class="install-bar" id="installBar">
+  <p>📱 ホーム画面に追加してオフラインで使用できます</p>
+  <button class="install-bar-btn" onclick="promptInstall()">追加</button>
+  <button class="install-dismiss" onclick="dismissInstall()">✕</button>
+</div>
+
+<!-- ─────── MAIN VIEW ─────── -->
+<div class="main-view" id="mainView">
+
+  <div class="card">
+
+    <!-- 親/子 -->
+    <div class="section-label">立場</div>
+    <div class="toggle-group cols-2">
+      <button class="tog-btn active-gold" id="btn-dealer" onclick="setDealer(true)">
+        親
+        <span class="sub">ディーラー</span>
+      </button>
+      <button class="tog-btn" id="btn-nondealer" onclick="setDealer(false)">
+        子
+        <span class="sub">ノンディーラー</span>
+      </button>
+    </div>
+
+    <!-- ロン/ツモ -->
+    <div class="section-label">和了方法</div>
+    <div class="toggle-group cols-2">
+      <button class="tog-btn active-red" id="btn-ron" onclick="setWin('ron')">
+        ロン
+        <span class="sub">放銃</span>
+      </button>
+      <button class="tog-btn" id="btn-tsumo" onclick="setWin('tsumo')">
+        ツモ
+        <span class="sub">自摸</span>
+      </button>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- 飜数 -->
+    <div class="section-label">飜数</div>
+    <div class="num-row">
+      <div class="num-box" style="flex:1">
+        <span class="num-box-label">飜</span>
+        <div class="num-display">
+          <button class="num-btn" onclick="changeHan(-1)">−</button>
+          <span class="num-val" id="hanVal">1</span>
+          <button class="num-btn" onclick="changeHan(1)">＋</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 符数 (ロン時のみ) -->
+    <div id="fuSection">
+      <div class="section-label">符数</div>
+      <div class="fu-grid" id="fuGrid">
+        <div class="fu-chip" onclick="setFu(20)">20符</div>
+        <div class="fu-chip active" onclick="setFu(30)">30符</div>
+        <div class="fu-chip" onclick="setFu(40)">40符</div>
+        <div class="fu-chip" onclick="setFu(50)">50符</div>
+        <div class="fu-chip" onclick="setFu(60)">60符</div>
+        <div class="fu-chip" onclick="setFu(70)">70符</div>
+        <div class="fu-chip" onclick="setFu(80)">80符</div>
+        <div class="fu-chip" onclick="setFu(100)">100符</div>
+      </div>
+
+      <div class="num-row">
+        <div class="num-box" style="flex:1">
+          <span class="num-box-label">符（カスタム）</span>
+          <div class="num-display">
+            <button class="num-btn" onclick="changeFu(-10)">−</button>
+            <span class="num-val" id="fuVal">30</span>
+            <button class="num-btn" onclick="changeFu(10)">＋</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <button class="calc-btn" onclick="calculate()">点数を計算する</button>
+
+  </div>
+
+  <!-- Result -->
+  <div class="result-card" id="resultCard">
+    <div class="result-header">
+      <span class="label">計算結果</span>
+      <div class="tags" id="resultTags"></div>
+    </div>
+    <div class="main-score">
+      <div class="score-num" id="mainScoreNum">—</div>
+      <div class="score-desc" id="scoreDesc"></div>
+    </div>
+    <div class="yakuman-banner" id="yakumanBanner">役満！</div>
+    <div class="mangan-label" id="manganLabel"></div>
+    <div class="tsumo-grid" id="tsumoGrid" style="display:none"></div>
+  </div>
+
+  <!-- Score table -->
+  <div class="score-table-card">
+    <div class="table-header">
+      <span class="table-title">点数表</span>
+      <div class="table-tabs">
+        <button class="table-tab active" id="tabDealer" onclick="switchTable('dealer')">親</button>
+        <button class="table-tab" id="tabNon" onclick="switchTable('non')">子</button>
+      </div>
+    </div>
+    <div id="tableContainer" style="overflow-x:auto">
+      <!-- injected by JS -->
+    </div>
+  </div>
+
+</div><!-- /main-view -->
+
+<!-- ─────── HISTORY VIEW ─────── -->
+<div class="history-view" id="historyView">
+  <!-- セクション切り替え -->
+  <div style="width:calc(100% - 2rem);max-width:480px;margin:0.75rem 1rem 0.25rem;display:flex;gap:6px;" id="histSubTabs">
+    <button class="table-tab active" id="hsub-score" onclick="switchHistSub('score')" style="flex:1;padding:0.4rem 0.3rem;font-size:0.75rem">点数</button>
+    <button class="table-tab" id="hsub-rank"  onclick="switchHistSub('rank')"  style="flex:1;padding:0.4rem 0.3rem;font-size:0.75rem">順位</button>
+    <button class="table-tab" id="hsub-chip"  onclick="switchHistSub('chip')"  style="flex:1;padding:0.4rem 0.3rem;font-size:0.75rem">チップ</button>
+    <button class="table-tab" id="hsub-table" onclick="switchHistSub('table')" style="flex:1;padding:0.4rem 0.3rem;font-size:0.75rem">場代</button>
+  </div>
+
+  <!-- 点数履歴 -->
+  <div id="hsec-score" style="width:100%;display:flex;flex-direction:column;align-items:center">
+    <div style="width:calc(100% - 2rem);max-width:480px;margin:0.25rem 1rem;" id="historyList">
+      <div class="empty-state">まだ履歴がありません</div>
+    </div>
+    <div style="width:calc(100% - 2rem);max-width:480px;margin:0 1rem 1rem;">
+      <button class="clear-btn" onclick="clearHistory()">点数履歴をすべて削除</button>
+    </div>
+  </div>
+
+  <!-- 順位履歴 -->
+  <div id="hsec-rank" style="width:100%;display:none;flex-direction:column;align-items:center">
+    <div style="width:calc(100% - 2rem);max-width:480px;margin:0.25rem 1rem;" id="rankHistListH">
+      <div class="empty-state">まだ精算履歴がありません</div>
+    </div>
+    <div style="width:calc(100% - 2rem);max-width:480px;margin:0 1rem 1rem;">
+      <button class="clear-btn" onclick="clearRankHistory()">順位履歴をすべて削除</button>
+    </div>
+  </div>
+
+  <!-- チップ履歴 -->
+  <div id="hsec-chip" style="width:100%;display:none;flex-direction:column;align-items:center">
+    <div style="width:calc(100% - 2rem);max-width:480px;margin:0.25rem 1rem;" id="chipHistListH">
+      <div class="empty-state">まだ履歴がありません</div>
+    </div>
+    <div style="width:calc(100% - 2rem);max-width:480px;margin:0 1rem 1rem;">
+      <button class="clear-btn" onclick="clearChipHistory()">チップ履歴をすべて削除</button>
+    </div>
+  </div>
+
+  <!-- 場代履歴 -->
+  <div id="hsec-table" style="width:100%;display:none;flex-direction:column;align-items:center">
+    <div style="width:calc(100% - 2rem);max-width:480px;margin:0.25rem 1rem;" id="feeHistListH">
+      <div class="empty-state">まだ履歴がありません</div>
+    </div>
+    <div style="width:calc(100% - 2rem);max-width:480px;margin:0 1rem 1rem;">
+      <button class="clear-btn" onclick="clearFeeHistory()">場代履歴をすべて削除</button>
+    </div>
+  </div>
+</div>
+
+<!-- ─────── RANK VIEW ─────── -->
+<div class="rank-view" id="rankView">
+
+  <!-- Settings -->
+  <div class="settings-card">
+    <div class="settings-row">
+      <span class="settings-label">開始点数</span>
+      <div class="settings-chips" id="startChips">
+        <button class="s-chip" onclick="setStart(20000)">20,000</button>
+        <button class="s-chip active-gold" onclick="setStart(25000)">25,000</button>
+        <button class="s-chip" onclick="setStart(30000)">30,000</button>
+      </div>
+    </div>
+    <div class="settings-row">
+      <span class="settings-label">ウマ</span>
+      <div class="settings-chips" id="umaChips">
+        <button class="s-chip" onclick="setUma('5-10')">5-10</button>
+        <button class="s-chip active-gold" onclick="setUma('10-20')">10-20</button>
+        <button class="s-chip" onclick="setUma('10-30')">10-30</button>
+        <button class="s-chip" onclick="setUma('20-30')">20-30</button>
+        <button class="s-chip" onclick="setUma('20-40')">20-40</button>
+      </div>
+    </div>
+    <div class="settings-row">
+      <span class="settings-label">返し点（オカ基準）</span>
+      <div class="settings-chips" id="returnChips">
+        <button class="s-chip active-gold" onclick="setReturn(30000)">30,000</button>
+        <button class="s-chip" onclick="setReturn(35000)">35,000</button>
+        <button class="s-chip" onclick="setReturn(40000)">40,000</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Player cards -->
+  <div class="player-card">
+    <div class="player-card-header">
+      <div class="player-rank-badge rank-1" id="badge-0">1</div>
+      <div style="font-size:0.68rem;color:var(--text3);letter-spacing:0.08em">東家</div>
+    </div>
+    <div class="player-name-row">
+      <input class="player-name-input" id="name-0" type="text" placeholder="プレイヤー1" maxlength="10" oninput="liveUpdate()">
+    </div>
+    <div class="player-score-row">
+      <div class="score-input-wrap">
+        <label>最終点数</label>
+        <div class="score-stepper">
+          <button class="ss-btn" onclick="stepScore(0,-100)">−</button>
+          <input class="score-direct-input" id="score-0" type="number" value="25000" inputmode="numeric" oninput="liveUpdate()">
+          <button class="ss-btn" onclick="stepScore(0,100)">＋</button>
+        </div>
+      </div>
+      <div class="score-sep">点</div>
+      <div class="score-input-wrap">
+        <label>自動順位</label>
+        <div class="score-stepper" style="justify-content:center">
+          <span class="ss-val" id="rank-disp-0" style="color:var(--text3)">—</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="player-card">
+    <div class="player-card-header">
+      <div class="player-rank-badge rank-2" id="badge-1">2</div>
+      <div style="font-size:0.68rem;color:var(--text3);letter-spacing:0.08em">南家</div>
+    </div>
+    <div class="player-name-row">
+      <input class="player-name-input" id="name-1" type="text" placeholder="プレイヤー2" maxlength="10" oninput="liveUpdate()">
+    </div>
+    <div class="player-score-row">
+      <div class="score-input-wrap">
+        <label>最終点数</label>
+        <div class="score-stepper">
+          <button class="ss-btn" onclick="stepScore(1,-100)">−</button>
+          <input class="score-direct-input" id="score-1" type="number" value="25000" inputmode="numeric" oninput="liveUpdate()">
+          <button class="ss-btn" onclick="stepScore(1,100)">＋</button>
+        </div>
+      </div>
+      <div class="score-sep">点</div>
+      <div class="score-input-wrap">
+        <label>自動順位</label>
+        <div class="score-stepper" style="justify-content:center">
+          <span class="ss-val" id="rank-disp-1" style="color:var(--text3)">—</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="player-card">
+    <div class="player-card-header">
+      <div class="player-rank-badge rank-3" id="badge-2">3</div>
+      <div style="font-size:0.68rem;color:var(--text3);letter-spacing:0.08em">西家</div>
+    </div>
+    <div class="player-name-row">
+      <input class="player-name-input" id="name-2" type="text" placeholder="プレイヤー3" maxlength="10" oninput="liveUpdate()">
+    </div>
+    <div class="player-score-row">
+      <div class="score-input-wrap">
+        <label>最終点数</label>
+        <div class="score-stepper">
+          <button class="ss-btn" onclick="stepScore(2,-100)">−</button>
+          <input class="score-direct-input" id="score-2" type="number" value="25000" inputmode="numeric" oninput="liveUpdate()">
+          <button class="ss-btn" onclick="stepScore(2,100)">＋</button>
+        </div>
+      </div>
+      <div class="score-sep">点</div>
+      <div class="score-input-wrap">
+        <label>自動順位</label>
+        <div class="score-stepper" style="justify-content:center">
+          <span class="ss-val" id="rank-disp-2" style="color:var(--text3)">—</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="player-card">
+    <div class="player-card-header">
+      <div class="player-rank-badge rank-4" id="badge-3">4</div>
+      <div style="font-size:0.68rem;color:var(--text3);letter-spacing:0.08em">北家</div>
+    </div>
+    <div class="player-name-row">
+      <input class="player-name-input" id="name-3" type="text" placeholder="プレイヤー4" maxlength="10" oninput="liveUpdate()">
+    </div>
+    <div class="player-score-row">
+      <div class="score-input-wrap">
+        <label>最終点数</label>
+        <div class="score-stepper">
+          <button class="ss-btn" onclick="stepScore(3,-100)">−</button>
+          <input class="score-direct-input" id="score-3" type="number" value="25000" inputmode="numeric" oninput="liveUpdate()">
+          <button class="ss-btn" onclick="stepScore(3,100)">＋</button>
+        </div>
+      </div>
+      <div class="score-sep">点</div>
+      <div class="score-input-wrap">
+        <label>自動順位</label>
+        <div class="score-stepper" style="justify-content:center">
+          <span class="ss-val" id="rank-disp-3" style="color:var(--text3)">—</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 合計確認バー -->
+  <div style="width:calc(100% - 2rem);max-width:480px;margin:0 1rem 0.25rem;">
+    <div id="sumCheck" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:0.6rem 1rem;display:flex;align-items:center;justify-content:space-between;font-size:0.8rem;">
+      <span style="color:var(--text3)">4人の合計点数</span>
+      <span id="sumDisplay" style="font-weight:700;color:var(--text2)">100,000</span>
+    </div>
+  </div>
+
+  <!-- Calc button -->
+  <div style="width:calc(100% - 2rem);max-width:480px;margin:0 1rem 0.5rem;display:flex;gap:8px;">
+    <button class="calc-btn" style="flex:1" onclick="calcRanking()">順位・ウマ・オカを計算する</button>
+    <button onclick="resetRank()" style="background:var(--surface);border:1px solid var(--border2);color:var(--text3);border-radius:12px;padding:0 1rem;font-size:0.78rem;cursor:pointer;white-space:nowrap;font-family:var(--font-sans);transition:all 0.15s" onmouseenter="this.style.borderColor='var(--red)';this.style.color='var(--red2)'" onmouseleave="this.style.borderColor='var(--border2)';this.style.color='var(--text3)'">リセット</button>
+  </div>
+
+  <!-- Result -->
+  <div class="rank-result-card" id="rankResultCard">
+    <div class="rr-header">
+      <span class="rr-title">精算結果</span>
+      <div class="rr-setting-tags" id="rrSettingTags"></div>
+    </div>
+    <div id="rrRows"></div>
+    <div class="rr-breakdown" id="rrBreakdown"></div>
+  </div>
+
+</div><!-- /rank-view -->
+
+<!-- ─────── CHIP VIEW ─────── -->
+<div class="chip-view" id="chipView">
+
+  <!-- 設定 -->
+  <div class="page-card">
+    <div class="page-card-title">チップ設定</div>
+    <div class="settings-row">
+      <span class="settings-label">1枚の価値</span>
+      <div class="fee-input-wrap">
+        <input class="fee-input" id="chipValue" type="number" value="100" inputmode="numeric" style="width:80px" oninput="chipLiveUpdate()">
+        <span class="fee-unit">円/枚</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- プレイヤー枚数入力 -->
+  <div class="page-card">
+    <div class="page-card-title">チップ枚数（プレイヤーごと）</div>
+    <div style="margin-bottom:0.5rem">
+      <div style="font-size:0.68rem;color:var(--text3);margin-bottom:0.4rem">一括プリセット（全員同枚数）</div>
+      <div class="chip-preset-row">
+        <button class="chip-preset-btn" onclick="setChipPreset(10)">10枚</button>
+        <button class="chip-preset-btn active" id="preset-20" onclick="setChipPreset(20)">20枚</button>
+        <button class="chip-preset-btn" onclick="setChipPreset(30)">30枚</button>
+        <button class="chip-preset-btn" id="preset-custom" onclick="setChipPreset(0)">個別</button>
+      </div>
+    </div>
+    <div id="chipPlayerRows"></div>
+    <div style="border-top:1px solid var(--border);margin-top:0.5rem;padding-top:0.5rem;display:flex;align-items:center;justify-content:space-between;font-size:0.8rem">
+      <span style="color:var(--text3)">4人合計</span>
+      <span id="chipTotalDisplay" style="font-weight:700;color:var(--text2)">80枚</span>
+    </div>
+  </div>
+
+  <!-- 計算ボタン -->
+  <div style="width:calc(100% - 2rem);max-width:480px;margin:0 1rem 0.5rem;display:flex;gap:8px;">
+    <button class="calc-btn" style="flex:1" onclick="calcChip()">チップ精算を計算する</button>
+    <button onclick="resetChip()" style="background:var(--surface);border:1px solid var(--border2);color:var(--text3);border-radius:12px;padding:0 1rem;font-size:0.78rem;cursor:pointer;white-space:nowrap;font-family:var(--font-sans);transition:all 0.15s" onmouseenter="this.style.borderColor='var(--red)';this.style.color='var(--red2)'" onmouseleave="this.style.borderColor='var(--border2)';this.style.color='var(--text3)'">リセット</button>
+  </div>
+
+  <!-- 結果 -->
+  <div class="page-card" id="chipResultCard" style="display:none">
+    <div class="page-card-title">精算結果</div>
+    <div id="chipResultRows"></div>
+  </div>
+
+  <!-- 履歴 -->
+  <div style="width:calc(100% - 2rem);max-width:480px;margin:0.25rem 1rem 0.25rem;">
+    <div class="section-label">チップ履歴</div>
+  </div>
+
+</div><!-- /chip-view -->
+
+<!-- ─────── TABLE FEE VIEW ─────── -->
+<div class="table-view" id="tableView">
+
+  <!-- 時間・卓代 -->
+  <div class="page-card">
+    <div class="page-card-title">卓代</div>
+    <div class="fee-row">
+      <span class="fee-label">時間単価</span>
+      <div class="fee-input-wrap">
+        <input class="fee-input" id="feePerHour" type="number" value="500" inputmode="numeric" oninput="feeLiveCalc()">
+        <span class="fee-unit">円/時間</span>
+      </div>
+    </div>
+    <div class="fee-row">
+      <span class="fee-label">プレイ時間</span>
+      <div class="fee-stepper">
+        <button class="fee-step-btn" onclick="stepHours(-0.5)">−</button>
+        <span class="fee-step-val" id="hoursVal">4.0</span>
+        <button class="fee-step-btn" onclick="stepHours(0.5)">＋</button>
+        <span class="fee-unit" style="margin-left:2px">時間</span>
+      </div>
+    </div>
+    <div class="fee-row" style="border-top:1px solid var(--border);padding-top:0.7rem;margin-top:0.3rem">
+      <span class="fee-label" style="font-weight:700;color:var(--text)">卓代合計</span>
+      <span style="font-family:var(--font-serif);font-size:1.15rem;font-weight:700;color:var(--gold2)" id="tableFeeTotal">2,000円</span>
+    </div>
+  </div>
+
+  <!-- 追加料金 -->
+  <div class="page-card">
+    <div class="page-card-title">追加料金（フリードリンク・食事など）</div>
+    <div id="extraItems"></div>
+    <button class="add-extra-btn" onclick="addExtraItem()">＋ 項目を追加</button>
+  </div>
+
+  <!-- 割り方 -->
+  <div class="page-card">
+    <div class="page-card-title">割り方</div>
+    <div class="discount-grid" id="splitModeGrid">
+      <button class="discount-btn active" id="split-equal" onclick="setSplitMode('equal')">
+        均等割り
+        <span class="sub">全員同額</span>
+      </button>
+      <button class="discount-btn" id="split-ladies" onclick="setSplitMode('ladies')">
+        女性割引あり
+        <span class="sub">1時間−○円</span>
+      </button>
+    </div>
+
+    <!-- 均等割り：人数 -->
+    <div id="splitEqualSection">
+      <div class="fee-row">
+        <span class="fee-label">人数</span>
+        <div class="fee-stepper">
+          <button class="fee-step-btn" onclick="stepPlayers(-1)">−</button>
+          <span class="fee-step-val" id="playerCountVal">4</span>
+          <button class="fee-step-btn" onclick="stepPlayers(1)">＋</button>
+          <span class="fee-unit" style="margin-left:2px">人</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 女性割引：名前と性別 + 割引額 -->
+    <div id="splitLadiesSection" style="display:none">
+      <div class="fee-row" style="margin-bottom:0.6rem">
+        <span class="fee-label">女性の割引額</span>
+        <div class="fee-input-wrap">
+          <span class="fee-unit">1時間あたり −</span>
+          <input class="fee-input" id="ladiesDiscPerHour" type="number" value="200" inputmode="numeric" style="width:72px">
+          <span class="fee-unit">円</span>
+        </div>
+      </div>
+      <div style="font-size:0.72rem;color:var(--text3);margin-bottom:0.5rem">名前をタップして男性/女性を切り替え</div>
+      <div id="ladiesPlayerList"></div>
+    </div>
+  </div>
+
+  <!-- 計算ボタン -->
+  <div style="width:calc(100% - 2rem);max-width:480px;margin:0 1rem 0.5rem;display:flex;gap:8px;">
+    <button class="calc-btn" style="flex:1" onclick="calcTableFee()">場代を計算する</button>
+    <button onclick="resetTableFee()" style="background:var(--surface);border:1px solid var(--border2);color:var(--text3);border-radius:12px;padding:0 1rem;font-size:0.78rem;cursor:pointer;white-space:nowrap;font-family:var(--font-sans);transition:all 0.15s" onmouseenter="this.style.borderColor='var(--red)';this.style.color='var(--red2)'" onmouseleave="this.style.borderColor='var(--border2)';this.style.color='var(--text3)'">リセット</button>
+  </div>
+
+  <!-- 結果 -->
+  <div class="fee-result-card" id="feeResultCard">
+    <div class="fee-result-header">
+      <span style="font-size:0.72rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text3)">場代精算</span>
+      <div id="feeResultTags"></div>
+    </div>
+    <div id="feeResultRows"></div>
+    <div class="fee-total-bar">
+      <span class="ftb-label">合計</span>
+      <span class="ftb-val" id="feeTotalDisplay">—</span>
+    </div>
+    <div class="fee-breakdown" id="feeBreakdown"></div>
+  </div>
+
+</div><!-- /table-view -->
+
+<!-- ─────── SETTLE VIEW ─────── -->
+<div class="settle-view" id="settleView">
+
+  <!-- 取り込む項目 -->
+  <div class="page-card" style="margin-top:0.75rem">
+    <div class="page-card-title">精算に含める項目</div>
+    <div style="display:flex;flex-direction:column;gap:8px" id="settleToggles">
+      <label style="display:flex;align-items:center;justify-content:space-between;font-size:0.88rem;color:var(--text2)">
+        <span>🏆 順位精算</span>
+        <input type="checkbox" id="st-rank" checked style="width:18px;height:18px;accent-color:var(--gold);cursor:pointer">
+      </label>
+      <label style="display:flex;align-items:center;justify-content:space-between;font-size:0.88rem;color:var(--text2)">
+        <span>C チップ</span>
+        <input type="checkbox" id="st-chip" checked style="width:18px;height:18px;accent-color:var(--gold);cursor:pointer">
+      </label>
+      <label style="display:flex;align-items:center;justify-content:space-between;font-size:0.88rem;color:var(--text2)">
+        <span>🏠 場代</span>
+        <input type="checkbox" id="st-table" checked style="width:18px;height:18px;accent-color:var(--gold);cursor:pointer">
+      </label>
+    </div>
+  </div>
+
+  <!-- 順位精算の換算レート -->
+  <div class="page-card" id="rankRateCard">
+    <div class="page-card-title">順位ポイント → 円 換算レート</div>
+    <div class="rate-chips" id="rateChips">
+      <button class="rate-chip" onclick="setRate(50)">1,000点 = 50円</button>
+      <button class="rate-chip active" onclick="setRate(100)">1,000点 = 100円</button>
+      <button class="rate-chip" onclick="setRate(200)">1,000点 = 200円</button>
+      <button class="rate-chip" onclick="setRate(500)">1,000点 = 500円</button>
+      <button class="rate-chip" onclick="setRate(1000)">1,000点 = 1,000円</button>
+    </div>
+    <div style="display:flex;align-items:center;gap:6px;margin-top:0.2rem">
+      <span style="font-size:0.8rem;color:var(--text2)">カスタム：1,000点 =</span>
+      <input class="fee-input" id="customRate" type="number" value="100" inputmode="numeric"
+        style="width:72px" oninput="setRate(parseInt(this.value)||100,true)">
+      <span style="font-size:0.8rem;color:var(--text3)">円</span>
+    </div>
+  </div>
+
+  <!-- 最新履歴プレビュー -->
+  <div class="page-card">
+    <div class="page-card-title">最新履歴を参照</div>
+    <div id="settlePreview" style="font-size:0.78rem;color:var(--text3)">各タブで計算すると自動で反映されます</div>
+  </div>
+
+  <!-- 計算ボタン -->
+  <div style="width:calc(100% - 2rem);max-width:480px;margin:0 1rem 0.5rem;display:flex;gap:8px;">
+    <button class="calc-btn" style="flex:1" onclick="calcSettle()">精算を計算する</button>
+    <button onclick="resetSettle()" style="background:var(--surface);border:1px solid var(--border2);color:var(--text3);border-radius:12px;padding:0 1rem;font-size:0.78rem;cursor:pointer;white-space:nowrap;font-family:var(--font-sans);transition:all 0.15s" onmouseenter="this.style.borderColor='var(--red)';this.style.color='var(--red2)'" onmouseleave="this.style.borderColor='var(--border2)';this.style.color='var(--text3)'">リセット</button>
+  </div>
+
+  <!-- 結果：プレイヤー別内訳 -->
+  <div id="settleResultWrap" style="width:calc(100% - 2rem);max-width:480px;margin:0 1rem;display:none">
+
+    <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);margin-bottom:0.4rem">
+      プレイヤー別内訳
+    </div>
+    <div id="settlePlayerBlocks"></div>
+
+    <div class="settle-grand-card" id="settleGrandCard">
+      <div class="sgc-title">最終精算（円）</div>
+      <div id="settleGrandRows"></div>
+    </div>
+
+    <div class="payment-card" id="settlePaymentCard">
+      <div class="payment-header">支払い方向</div>
+      <div id="settlePaymentRows"></div>
+    </div>
+
+  </div>
+  <div style="height:1rem"></div>
+
+</div><!-- /settle-view -->
+
+<!-- ─────── EDIT MODAL ─────── -->
+<div class="modal-overlay" id="editModal" onclick="closeEditModal(event)">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">精算履歴を編集</div>
+    <div class="modal-sub" id="editModalSub">—</div>
+    <div id="editRows"></div>
+    <div class="modal-divider"></div>
+    <div class="modal-result-preview" id="editPreview" style="display:none"></div>
+    <button class="modal-recalc-btn" onclick="previewEdit()">再計算してプレビュー</button>
+    <button class="modal-recalc-btn" id="saveEditBtn" style="display:none;background:linear-gradient(135deg,#0f6e56,#1d9e75,#0f6e56);box-shadow:0 3px 12px rgba(29,158,117,0.3)" onclick="saveEdit()">この内容で保存する</button>
+    <button class="modal-delete-btn" onclick="deleteEntry()">この履歴を削除する</button>
+    <button class="modal-cancel-btn" onclick="closeEditModal()">キャンセル</button>
+  </div>
+</div>
+
+<script>
+let state = {
+  dealer: true,
+  win: 'ron',
+  han: 1,
+  fu: 30,
+  tableView: 'dealer'
+};
+
+// ─── Score calculation ───────────────────────────────────────────────────
+function roundUp100(n) { return Math.ceil(n / 100) * 100; }
+
+const MANGAN_NAMES = { mangan:'満貫', haneman:'跳満', baiman:'倍満', sanbaiman:'三倍満', yakuman:'役満' };
+
+function getManganScore(han, dealer) {
+  // haneman etc
+  let base;
+  if (han >= 13) base = 'yakuman';
+  else if (han >= 11) base = 'sanbaiman';
+  else if (han >= 8)  base = 'baiman';
+  else if (han >= 6)  base = 'haneman';
+  else if (han >= 5)  base = 'mangan';
+  else return null;
+
+  const tbl = {
+    mangan:    { ron_dealer: 12000, ron_non: 8000,  tsumo_dealer: [4000,4000,4000], tsumo_non: [4000, 2000] },
+    haneman:   { ron_dealer: 18000, ron_non: 12000, tsumo_dealer: [6000,6000,6000], tsumo_non: [6000, 3000] },
+    baiman:    { ron_dealer: 24000, ron_non: 16000, tsumo_dealer: [8000,8000,8000], tsumo_non: [8000, 4000] },
+    sanbaiman: { ron_dealer: 36000, ron_non: 24000, tsumo_dealer: [12000,12000,12000], tsumo_non: [12000, 6000] },
+    yakuman:   { ron_dealer: 48000, ron_non: 32000, tsumo_dealer: [16000,16000,16000], tsumo_non: [16000, 8000] },
+  };
+  return { name: base, ...tbl[base] };
+}
+
+function calcScore(han, fu, dealer, win) {
+  // Check mangan threshold first
+  // basic points = fu * 2^(han+2)
+  const basic = fu * Math.pow(2, han + 2);
+  // If basic >= 2000 it's mangan or higher, cap at mangan
+  let cappedHan = han;
+  if (basic >= 2000) cappedHan = 5; // treat as mangan
+
+  const mangan = getManganScore(cappedHan, dealer);
+  if (mangan) return { mangan, basic: null };
+
+  // Normal calculation
+  if (win === 'ron') {
+    let pts;
+    if (dealer) {
+      pts = roundUp100(basic * 6);
+    } else {
+      pts = roundUp100(basic * 4);
+    }
+    return { ron: pts };
+  } else {
+    // tsumo
+    if (dealer) {
+      const each = roundUp100(basic * 2);
+      return { tsumo: { dealer: each, others: [each, each, each], total: each * 3 } };
+    } else {
+      const fromDealer = roundUp100(basic * 2);
+      const fromNon   = roundUp100(basic);
+      return { tsumo: { dealer: fromDealer, others: [fromNon, fromNon], fromDealer, fromNon, total: fromDealer + fromNon * 2 } };
+    }
+  }
+}
+
+// ─── UI helpers ──────────────────────────────────────────────────────────
+function setDealer(v) {
+  state.dealer = v;
+  document.getElementById('btn-dealer').className = 'tog-btn' + (v ? ' active-gold' : '');
+  document.getElementById('btn-nondealer').className = 'tog-btn' + (!v ? ' active-gold' : '');
+  renderTable();
+}
+
+function setWin(v) {
+  state.win = v;
+  document.getElementById('btn-ron').className = 'tog-btn' + (v === 'ron' ? ' active-red' : '');
+  document.getElementById('btn-tsumo').className = 'tog-btn' + (v === 'tsumo' ? ' active-red' : '');
+  // Fu not relevant for tsumo (conceptually), still show it
+}
+
+function changeHan(d) {
+  state.han = Math.max(1, Math.min(13, state.han + d));
+  document.getElementById('hanVal').textContent = state.han;
+}
+
+function changeFu(d) {
+  state.fu = Math.max(20, Math.min(110, state.fu + d));
+  // round to nearest 10
+  state.fu = Math.round(state.fu / 10) * 10;
+  document.getElementById('fuVal').textContent = state.fu;
+  updateFuChips();
+}
+
+const FU_OPTS = [20,30,40,50,60,70,80,100];
+function setFu(f) {
+  state.fu = f;
+  document.getElementById('fuVal').textContent = f;
+  updateFuChips();
+}
+function updateFuChips() {
+  document.querySelectorAll('.fu-chip').forEach((el, i) => {
+    el.className = 'fu-chip' + (FU_OPTS[i] === state.fu ? ' active' : '');
+  });
+}
+
+// ─── Calculate ───────────────────────────────────────────────────────────
+function calculate() {
+  const { han, fu, dealer, win } = state;
+  const result = calcScore(han, fu, dealer, win);
+  displayResult(result, han, fu, dealer, win);
+  saveHistory(result, han, fu, dealer, win);
+
+  // Scroll to result
+  setTimeout(() => {
+    document.getElementById('resultCard').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }, 100);
+}
+
+function displayResult(result, han, fu, dealer, win) {
+  const card = document.getElementById('resultCard');
+  card.className = 'result-card show';
+
+  const tagsEl = document.getElementById('resultTags');
+  const mainNum = document.getElementById('mainScoreNum');
+  const descEl = document.getElementById('scoreDesc');
+  const yakuBanner = document.getElementById('yakumanBanner');
+  const manganLbl = document.getElementById('manganLabel');
+  const tsumoGrid = document.getElementById('tsumoGrid');
+
+  // Tags
+  tagsEl.innerHTML =
+    `<span class="tag tag-gold">${dealer ? '親' : '子'}</span>` +
+    `<span class="tag tag-red">${win === 'ron' ? 'ロン' : 'ツモ'}</span>` +
+    `<span class="tag tag-blue">${han}飜${han < 5 ? ' ' + fu + '符' : ''}</span>`;
+
+  yakuBanner.className = 'yakuman-banner';
+  manganLbl.className = 'mangan-label';
+  tsumoGrid.style.display = 'none';
+
+  if (result.mangan) {
+    const m = result.mangan;
+    const name = MANGAN_NAMES[m.name];
+    if (m.name === 'yakuman') {
+      yakuBanner.className = 'yakuman-banner show';
+      yakuBanner.textContent = '役満！ ─ 最高の手！';
+    } else {
+      manganLbl.className = 'mangan-label show';
+      manganLbl.textContent = name;
+    }
+
+    if (win === 'ron') {
+      const pts = dealer ? m.ron_dealer : m.ron_non;
+      mainNum.innerHTML = pts.toLocaleString() + '<span class="score-unit">点</span>';
+      descEl.textContent = `${name} ロン`;
+    } else {
+      if (dealer) {
+        const each = m.tsumo_dealer[0];
+        mainNum.innerHTML = (each * 3).toLocaleString() + '<span class="score-unit">点</span>';
+        descEl.textContent = `${name} ツモ（全員から ${each.toLocaleString()}点ずつ）`;
+        tsumoGrid.style.display = 'grid';
+        tsumoGrid.innerHTML = `
+          <div class="tsumo-item non-dealer"><div class="t-label">子（各自）</div><div class="t-val">${each.toLocaleString()}</div></div>
+          <div class="tsumo-item dealer"><div class="t-label">合計</div><div class="t-val">${(each*3).toLocaleString()}</div></div>`;
+      } else {
+        const fd = m.tsumo_non[0], fn = m.tsumo_non[1];
+        const total = fd + fn * 2;
+        mainNum.innerHTML = total.toLocaleString() + '<span class="score-unit">点</span>';
+        descEl.textContent = `${name} ツモ`;
+        tsumoGrid.style.display = 'grid';
+        tsumoGrid.innerHTML = `
+          <div class="tsumo-item dealer"><div class="t-label">親から</div><div class="t-val">${fd.toLocaleString()}</div></div>
+          <div class="tsumo-item non-dealer"><div class="t-label">子（各）から</div><div class="t-val">${fn.toLocaleString()}</div></div>
+          <div class="tsumo-item non-dealer" style="grid-column:1/-1"><div class="t-label">合計</div><div class="t-val">${total.toLocaleString()}</div></div>`;
+      }
+    }
+  } else if (result.ron !== undefined) {
+    mainNum.innerHTML = result.ron.toLocaleString() + '<span class="score-unit">点</span>';
+    descEl.textContent = `${han}飜${fu}符 ロン`;
+  } else if (result.tsumo) {
+    const t = result.tsumo;
+    mainNum.innerHTML = t.total.toLocaleString() + '<span class="score-unit">点</span>';
+    descEl.textContent = `${han}飜${fu}符 ツモ`;
+    tsumoGrid.style.display = 'grid';
+    if (dealer) {
+      tsumoGrid.innerHTML = `
+        <div class="tsumo-item non-dealer"><div class="t-label">子（各自）</div><div class="t-val">${t.dealer.toLocaleString()}</div></div>
+        <div class="tsumo-item dealer"><div class="t-label">合計</div><div class="t-val">${t.total.toLocaleString()}</div></div>`;
+    } else {
+      tsumoGrid.innerHTML = `
+        <div class="tsumo-item dealer"><div class="t-label">親から</div><div class="t-val">${t.fromDealer.toLocaleString()}</div></div>
+        <div class="tsumo-item non-dealer"><div class="t-label">子（各）から</div><div class="t-val">${t.fromNon.toLocaleString()}</div></div>
+        <div class="tsumo-item non-dealer" style="grid-column:1/-1"><div class="t-label">合計</div><div class="t-val">${t.total.toLocaleString()}</div></div>`;
+    }
+  }
+}
+
+// ─── Score table ──────────────────────────────────────────────────────────
+const FU_LIST = [20, 25, 30, 40, 50, 60, 70, 80, 100];
+const HAN_LIST = [1, 2, 3, 4, '満貫', '跳満', '倍満', '三倍満', '役満'];
+
+// 点数表：ロン点数を返す（無効な場合 null）
+function getRonScore(han, fu, dealer) {
+  // 20符：ロンなし（全飜）
+  if (fu === 20) return null;
+  // 25符（チートイツ）：ロンあり、1飜なし
+  if (fu === 25 && han === 1) return null;
+  if (fu === 25) {
+    // チートイツのロン点数（基本符25、切り上げなし）
+    const basic = 25 * Math.pow(2, han + 2);
+    if (basic >= 2000) return dealer ? 12000 : 8000;
+    return roundUp100(basic * (dealer ? 6 : 4));
+  }
+  const basic = fu * Math.pow(2, han + 2);
+  if (basic >= 2000) return dealer ? 12000 : 8000;
+  return roundUp100(basic * (dealer ? 6 : 4));
+}
+
+// 点数表：ツモ点数を返す（無効な場合 null）
+// dealer=和了者が親かどうか
+// 戻り値: dealer和了→ {each} / non-dealer和了→ {fromD, fromN}
+function getTsumoScore(han, fu, dealer) {
+  // 25符（チートイツ）：ツモなし
+  if (fu === 25) return null;
+  // 20符1飜：ピンフツモのみ特殊値
+  if (fu === 20 && han === 1) {
+    if (dealer) return { each: 700 };           // 親：700オール
+    else        return { fromD: 700, fromN: 400 }; // 子：400・700
+  }
+  // 20符2飜以降：通常計算
+  const basic = fu * Math.pow(2, han + 2);
+  if (dealer) {
+    const each = basic >= 2000 ? 4000 : roundUp100(basic * 2);
+    return { each };
+  } else {
+    const fromD = basic >= 2000 ? 4000 : roundUp100(basic * 2);
+    const fromN = basic >= 2000 ? 2000 : roundUp100(basic);
+    return { fromD, fromN };
+  }
+}
+
+// 満貫以上の文字列 han の点数ラベルを返す
+function getManganLabel(han, dealer) {
+  const nameMap = { '満貫':'mangan','跳満':'haneman','倍満':'baiman','三倍満':'sanbaiman','役満':'yakuman' };
+  const tbl = {
+    mangan:    { ron_d:12000, ron_n:8000,  td:4000, tn_d:4000, tn_n:2000 },
+    haneman:   { ron_d:18000, ron_n:12000, td:6000, tn_d:6000, tn_n:3000 },
+    baiman:    { ron_d:24000, ron_n:16000, td:8000, tn_d:8000, tn_n:4000 },
+    sanbaiman: { ron_d:36000, ron_n:24000, td:12000,tn_d:12000,tn_n:6000 },
+    yakuman:   { ron_d:48000, ron_n:32000, td:16000,tn_d:16000,tn_n:8000 },
+  };
+  const t = tbl[nameMap[han]];
+  const ron   = dealer ? t.ron_d : t.ron_n;
+  const tsumo = dealer ? `${t.td.toLocaleString()}×3` : `${t.tn_d.toLocaleString()}/${t.tn_n.toLocaleString()}`;
+  return { ron: ron.toLocaleString(), tsumo, isMangan: true };
+}
+
+function renderTable() {
+  const dealer = state.tableView === 'dealer';
+  const container = document.getElementById('tableContainer');
+
+  let html = '<table class="score-table"><thead><tr>';
+  html += '<th style="font-size:0.62rem;min-width:36px">符＼飜<br><span style="font-size:0.55rem;color:var(--text3)">ロン/ツモ</span></th>';
+  HAN_LIST.forEach(h => {
+    const label = typeof h === 'string' ? h.slice(0,1)+'満' : h+'飜';
+    html += `<th style="font-size:0.68rem">${label}</th>`;
+  });
+  html += '</tr></thead><tbody>';
+
+  FU_LIST.forEach(fu => {
+    html += `<tr>`;
+    html += `<td style="font-size:0.75rem;font-weight:600;white-space:nowrap">${fu}符</td>`;
+
+    HAN_LIST.forEach(han => {
+      const isCurrent = typeof han === 'number' && han === state.han && fu === state.fu && state.dealer === dealer;
+      const hlStyle = isCurrent ? 'background:var(--gold-dim);' : '';
+
+      // 満貫以上文字列
+      if (typeof han === 'string') {
+        const { ron, tsumo } = getManganLabel(han, dealer);
+        html += `<td class="mangan" style="${hlStyle}">
+          <span class="cell-ron">${ron}</span>
+          <span class="cell-tsumo mangan-t">${tsumo}</span>
+        </td>`;
+        return;
+      }
+
+      // 25符1飜：全て無効
+      if (fu === 25 && han === 1) {
+        html += `<td><span style="color:var(--text3);font-size:0.7rem">—</span></td>`;
+        return;
+      }
+
+      const ron   = getRonScore(han, fu, dealer);
+      const tsumo = getTsumoScore(han, fu, dealer);
+
+      const basic = fu * Math.pow(2, han + 2);
+      const isMangan = basic >= 2000 && fu !== 20; // 20符は満貫表示しない（ツモのみ）
+      const cls = isMangan ? 'mangan' : '';
+
+      const ronLabel = ron === null
+        ? '<span style="color:var(--text3);font-size:0.7rem">—</span>'
+        : `<span class="cell-ron" style="${isMangan?'color:var(--red2);font-weight:700':''}">${ron.toLocaleString()}</span>`;
+
+      let tsumoLabel = '';
+      if (tsumo === null) {
+        // 25符はツモなし表示
+        tsumoLabel = '<span class="cell-tsumo" style="color:var(--text3)">—</span>';
+      } else if (dealer) {
+        tsumoLabel = `<span class="cell-tsumo${isMangan?' mangan-t':''}">${tsumo.each.toLocaleString()}×3</span>`;
+      } else {
+        tsumoLabel = `<span class="cell-tsumo${isMangan?' mangan-t':''}">${tsumo.fromD.toLocaleString()}/${tsumo.fromN.toLocaleString()}</span>`;
+      }
+
+      html += `<td class="${cls}" style="${hlStyle}${isCurrent?'outline:1px solid var(--gold);':''}">${ronLabel}${tsumoLabel}</td>`;
+    });
+    html += '</tr>';
+  });
+
+  html += '</tbody></table>';
+  container.innerHTML = html;
+}
+
+function switchTable(v) {
+  state.tableView = v;
+  document.getElementById('tabDealer').className = 'table-tab' + (v === 'dealer' ? ' active' : '');
+  document.getElementById('tabNon').className = 'table-tab' + (v === 'non' ? ' active' : '');
+  renderTable();
+}
+
+
+
+// ─── History ─────────────────────────────────────────────────────────────
+function saveHistory(result, han, fu, dealer, win) {
+  const history = JSON.parse(localStorage.getItem('mahjong_history') || '[]');
+  let score = 0;
+  if (result.mangan) {
+    score = win === 'ron' ? (dealer ? result.mangan.ron_dealer : result.mangan.ron_non)
+      : result.mangan.tsumo_dealer ? result.mangan.tsumo_dealer[0] * 3 : result.mangan.tsumo_non[0] + result.mangan.tsumo_non[1] * 2;
+  } else if (result.ron !== undefined) {
+    score = result.ron;
+  } else if (result.tsumo) {
+    score = result.tsumo.total;
+  }
+
+  const entry = {
+    id: Date.now(),
+    han, fu, dealer, win, score,
+    manganName: result.mangan ? result.mangan.name : null,
+    time: new Date().toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' })
+  };
+  history.unshift(entry);
+  if (history.length > 30) history.pop();
+  localStorage.setItem('mahjong_history', JSON.stringify(history));
+}
+
+function renderHistory() {
+  const history = JSON.parse(localStorage.getItem('mahjong_history') || '[]');
+  const el = document.getElementById('historyList');
+  if (!history.length) {
+    el.innerHTML = '<div class="empty-state">まだ履歴がありません</div>';
+    return;
+  }
+  el.innerHTML = history.map(e => {
+    const winLabel = e.win === 'ron' ? 'ロン' : 'ツモ';
+    const dealerLabel = e.dealer ? '親' : '子';
+    const manganLabel = e.manganName ? ` (${MANGAN_NAMES[e.manganName]})` : '';
+    const hanFuLabel = e.manganName ? `${e.han}飜` : `${e.han}飜${e.fu}符`;
+    return `<div class="history-item">
+      <div class="history-left">
+        <div class="h-score">${e.score.toLocaleString()}<span style="font-size:0.8rem;color:var(--text2)">点</span></div>
+        <div class="h-info">
+          ${hanFuLabel}${manganLabel}
+          <span class="h-tag" style="background:var(--gold-dim);color:var(--gold2)">${dealerLabel}</span>
+          <span class="h-tag" style="background:var(--red-dim);color:var(--red2)">${winLabel}</span>
+        </div>
+      </div>
+      <div class="history-right">
+        <div class="h-time">${e.time}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function clearHistory() {
+  if (confirm('履歴をすべて削除しますか？')) {
+    localStorage.removeItem('mahjong_history');
+    renderHistory();
+  }
+}
+
+// ─── Tab & View navigation ────────────────────────────────────────────────
+let currentTab = 'score'; // 'score' | 'rank'
+let showingHistory = false;
+
+function switchTab(tab) {
+  currentTab = tab;
+  showingHistory = (tab === 'history');
+  ['score','rank','chip','table','history','settle'].forEach(t => {
+    const el = document.getElementById('tab-'+t);
+    if(el) el.className = 'tab-item' + (tab === t ? ' active' : '');
+  });
+  document.getElementById('mainView').className    = tab === 'score'   ? 'main-view'        : 'main-view hidden';
+  document.getElementById('rankView').className    = tab === 'rank'    ? 'rank-view show'   : 'rank-view';
+  document.getElementById('chipView').className    = tab === 'chip'    ? 'chip-view show'   : 'chip-view';
+  document.getElementById('tableView').className   = tab === 'table'   ? 'table-view show'  : 'table-view';
+  document.getElementById('historyView').className = tab === 'history' ? 'history-view show': 'history-view';
+  document.getElementById('settleView').className  = tab === 'settle'  ? 'settle-view show' : 'settle-view';
+  if (tab === 'rank')    { liveUpdate(); }
+  if (tab === 'chip')    { buildChipPlayerRows(); }
+  if (tab === 'table')   { buildLadiesPlayerList(); feeLiveCalc(); }
+  if (tab === 'history') {
+    const subMap = {score:'score', rank:'rank', chip:'chip', table:'table'};
+    switchHistSub(subMap[currentTab] || 'score');
+  }
+  if (tab === 'settle')  { buildSettlePreview(); }
+  updateAccordionActive(tab);
+}
+
+// ─── History sub-tab switching ────────────────────────────────────────────
+let currentHistSub = 'score';
+function switchHistSub(sub) {
+  currentHistSub = sub;
+  ['score','rank','chip','table'].forEach(t => {
+    const btn = document.getElementById('hsub-'+t);
+    const sec = document.getElementById('hsec-'+t);
+    if(btn) btn.className = 'table-tab' + (sub===t ? ' active' : '');
+    if(sec) sec.style.display = sub===t ? 'flex' : 'none';
+  });
+  if(sub==='score') renderHistory();
+  if(sub==='rank')  renderRankHistoryH();
+  if(sub==='chip')  renderChipHistoryH();
+  if(sub==='table') renderFeeHistoryH();
+}
+
+// ─── Ranking state ────────────────────────────────────────────────────────
+const rankState = {
+  startPt: 25000,
+  returnPt: 30000,
+  uma: '10-20',
+};
+
+const UMA_TABLE = {
+  '5-10':  [10, 5, -5, -10],
+  '10-20': [20, 10, -10, -20],
+  '10-30': [30, 10, -10, -30],
+  '20-30': [30, 20, -20, -30],
+  '20-40': [40, 20, -20, -40],
+};
+
+function setStart(v) {
+  rankState.startPt = v;
+  document.querySelectorAll('#startChips .s-chip').forEach(el => {
+    el.className = 's-chip' + (parseInt(el.textContent.replace(/,/g,'')) === v ? ' active-gold' : '');
+  });
+}
+function setUma(v) {
+  rankState.uma = v;
+  document.querySelectorAll('#umaChips .s-chip').forEach(el => {
+    el.className = 's-chip' + (el.textContent === v ? ' active-gold' : '');
+  });
+}
+function setReturn(v) {
+  rankState.returnPt = v;
+  document.querySelectorAll('#returnChips .s-chip').forEach(el => {
+    el.className = 's-chip' + (parseInt(el.textContent.replace(/,/g,'')) === v ? ' active-gold' : '');
+  });
+}
+
+function stepScore(i, d) {
+  const el = document.getElementById('score-' + i);
+  el.value = (parseInt(el.value) || 0) + d;
+  liveUpdate();
+}
+
+function liveUpdate() {
+  const scores = [0,1,2,3].map(i => parseInt(document.getElementById('score-'+i).value) || 0);
+  const sum = scores.reduce((a,b) => a+b, 0);
+
+  // Sum check
+  const sumEl = document.getElementById('sumDisplay');
+  sumEl.textContent = sum.toLocaleString();
+  const expected = rankState.startPt * 4;
+  if (sum === expected) {
+    sumEl.style.color = 'var(--green)';
+    document.getElementById('sumCheck').style.borderColor = 'var(--green)';
+  } else {
+    sumEl.style.color = 'var(--red2)';
+    document.getElementById('sumCheck').style.borderColor = 'var(--red)';
+  }
+
+  // Auto rank (by score descending, ties by seat order)
+  const indexed = scores.map((s,i) => ({s,i}));
+  indexed.sort((a,b) => b.s - a.s || a.i - b.i);
+  const rankOf = new Array(4);
+  indexed.forEach((p, pos) => { rankOf[p.i] = pos + 1; });
+
+  const rankColors = ['var(--gold2)', '#c0c0c0', '#c2804a', 'var(--text3)'];
+  for (let i = 0; i < 4; i++) {
+    const el = document.getElementById('rank-disp-' + i);
+    const r = rankOf[i];
+    el.textContent = r + '位';
+    el.style.color = rankColors[r-1];
+    const badge = document.getElementById('badge-' + i);
+    badge.className = 'player-rank-badge rank-' + r;
+    badge.textContent = r;
+  }
+}
+
+// 五捨六入: 小数部が0.6以上のとき繰り上げ（0.5は切り捨て）
+function roundGo6(x) {
+  const floor = Math.floor(x);
+  return (x - floor) >= 0.6 ? floor + 1 : floor;
+}
+
+function calcRanking() {
+  const scores = [0,1,2,3].map(i => parseInt(document.getElementById('score-'+i).value) || 0);
+  const names  = [0,1,2,3].map(i => document.getElementById('name-'+i).value.trim() || ('P'+(i+1)));
+
+  const results = computeResults(scores, names, rankState);
+
+  // Display
+  displayRankResult(results, rankState);
+
+  // ② 計算後に全員を開始点数にリセット
+  for (let i = 0; i < 4; i++) {
+    document.getElementById('score-'+i).value = rankState.startPt;
+  }
+  liveUpdate();
+
+  // Scroll to result
+  setTimeout(() => document.getElementById('rankResultCard').scrollIntoView({ behavior:'smooth', block:'nearest' }), 100);
+
+  // Save history
+  saveRankHistory(results, rankState);
+  renderRankHistory();
+}
+
+// 共通の計算ロジック（モーダル再計算でも使う）
+function computeResults(scores, names, settings) {
+  const players = scores.map((s, i) => ({ name: names[i], score: s, seat: i }));
+  players.sort((a,b) => b.score - a.score || a.seat - b.seat);
+  players.forEach((p,pos) => { p.rank = pos + 1; });
+
+  const umaVals = UMA_TABLE[settings.uma];
+  const returnPt = settings.returnPt;
+
+  let results = players.map(p => {
+    const raw = (p.score - returnPt) / 1000;
+    const rawRounded = roundGo6(raw); // ①五捨六入
+    const uma = umaVals[p.rank - 1];
+    const total = rawRounded + uma;
+    return { ...p, raw: rawRounded, uma, total };
+  });
+
+  // 合計が0になるよう端数を1位に集中
+  const totalSum = results.reduce((a,b) => a + b.total, 0);
+  results.find(p => p.rank === 1).total -= totalSum;
+
+  results.sort((a,b) => a.rank - b.rank);
+  return results;
+}
+
+function displayRankResult(results, settings) {
+  const rc = document.getElementById('rankResultCard');
+  rc.className = 'rank-result-card show';
+
+  document.getElementById('rrSettingTags').innerHTML =
+    `<span class="tag tag-gold">${settings.startPt.toLocaleString()}点</span>` +
+    `<span class="tag tag-blue">ウマ${settings.uma}</span>` +
+    `<span class="tag tag-red">返し${settings.returnPt.toLocaleString()}</span>`;
+
+  document.getElementById('rrRows').innerHTML = results.map(p => {
+    const totalCls = p.total > 0 ? 'rr-total pos' : p.total < 0 ? 'rr-total neg' : 'rr-total';
+    const umaCls   = p.uma > 0 ? 'rr-uma pos' : p.uma < 0 ? 'rr-uma neg' : 'rr-uma';
+    const sign    = p.total > 0 ? '+' : '';
+    const rawSign = p.raw > 0 ? '+' : '';
+    const umaSign = p.uma > 0 ? '+' : '';
+    return `<div class="rr-row${p.rank===1?' winner':''}">
+      <span class="player-rank-badge rank-${p.rank}" style="font-size:0.75rem">${p.rank}</span>
+      <span class="rr-name">${p.name}</span>
+      <span class="rr-raw">${rawSign}${p.raw}</span>
+      <span class="${umaCls}">${umaSign}${p.uma}</span>
+      <span class="${totalCls}">${sign}${p.total}</span>
+    </div>`;
+  }).join('');
+
+  const returnPt = settings.returnPt;
+  const okaTotal = (returnPt - settings.startPt) * 4 / 1000;
+  document.getElementById('rrBreakdown').innerHTML =
+    `計算式: <span>(最終点数 − ${returnPt.toLocaleString()}) ÷ 1000 → 五捨六入 → ＋ウマ</span><br>` +
+    `オカ: <span>${settings.startPt.toLocaleString()} → ${returnPt.toLocaleString()} 差 = ${((returnPt-settings.startPt)/1000).toFixed(1)}pt × 4人 → 1位に +${Math.abs(okaTotal).toFixed(0)}pt 集中</span>`;
+}
+
+// ─── Rank history ─────────────────────────────────────────────────────────
+function saveRankHistory(results, settings) {
+  const h = JSON.parse(localStorage.getItem('mahjong_rank_history') || '[]');
+  h.unshift({
+    id: Date.now(),
+    time: new Date().toLocaleString('ja-JP', { month:'numeric', day:'numeric', hour:'2-digit', minute:'2-digit' }),
+    results: results.map(p => ({ name:p.name, rank:p.rank, score:p.score, total:p.total, raw:p.raw, uma:p.uma })),
+    settings: { startPt: settings.startPt, returnPt: settings.returnPt, uma: settings.uma }
+  });
+  if (h.length > 20) h.pop();
+  localStorage.setItem('mahjong_rank_history', JSON.stringify(h));
+}
+
+function renderRankHistory()  { _renderRankHistTo('rankHistListH'); }
+function _renderRankHistTo(elId) {
+  const h = JSON.parse(localStorage.getItem('mahjong_rank_history') || '[]');
+  const el = document.getElementById(elId);
+  if(!el) return;
+  if (!h.length) { el.innerHTML = '<div class="empty-state">まだ精算履歴がありません</div>'; return; }
+  el.innerHTML = h.map(entry => {
+    const sorted = [...entry.results].sort((a,b) => a.rank - b.rank);
+    const cols = sorted.map(p => {
+      const sign = p.total > 0 ? '+' : '';
+      const cls = p.total > 0 ? 'rh-pts pos' : p.total < 0 ? 'rh-pts neg' : 'rh-pts';
+      return `<div class="rh-player">
+        <div class="rh-rank rank-${p.rank}" style="font-size:0.58rem;font-weight:900">${p.rank}</div>
+        <span class="rh-pname">${p.name}</span>
+        <span class="${cls}">${sign}${p.total}</span>
+      </div>`;
+    }).join('');
+    return `<div class="rank-hist-item" onclick="openEditModal(${entry.id})">
+      <div class="rh-header">
+        <div style="font-size:0.75rem;color:var(--text2);font-weight:500">${entry.settings.startPt.toLocaleString()}点 ウマ${entry.settings.uma}</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div class="rh-date">${entry.time}</div>
+          <span style="font-size:0.68rem;color:var(--text3);border:1px solid var(--border);border-radius:5px;padding:0.1rem 0.4rem">編集</span>
+        </div>
+      </div>
+      <div class="rh-players">${cols}</div>
+    </div>`;
+  }).join('');
+}
+function renderRankHistoryH() { _renderRankHistTo('rankHistListH'); }
+
+function clearRankHistory() {
+  if (confirm('精算履歴をすべて削除しますか？')) {
+    localStorage.removeItem('mahjong_rank_history');
+    renderRankHistoryH();
+  }
+}
+
+// ─── Edit modal ───────────────────────────────────────────────────────────
+let editingId = null;
+
+function openEditModal(id) {
+  const h = JSON.parse(localStorage.getItem('mahjong_rank_history') || '[]');
+  const entry = h.find(e => e.id === id);
+  if (!entry) return;
+  editingId = id;
+
+  document.getElementById('editModalSub').textContent =
+    `${entry.time} ／ 開始${entry.settings.startPt.toLocaleString()}点 ウマ${entry.settings.uma} 返し${entry.settings.returnPt.toLocaleString()}`;
+
+  const sorted = [...entry.results].sort((a,b) => a.rank - b.rank);
+  document.getElementById('editRows').innerHTML = sorted.map((p,i) => {
+    const sign = p.total > 0 ? '+' : '';
+    const cls = p.total > 0 ? 'pos' : p.total < 0 ? 'neg' : '';
+    return `<div class="edit-player-row">
+      <div class="edit-rank-badge rank-${p.rank}">${p.rank}</div>
+      <input class="edit-name" id="em-name-${i}" type="text" value="${p.name}" maxlength="10">
+      <div class="edit-score-wrap">
+        <input class="edit-score" id="em-score-${i}" type="number" value="${p.score}" inputmode="numeric" data-seat="${p.seat ?? i}">
+        <span style="font-size:0.7rem;color:var(--text3)">点</span>
+      </div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('editPreview').style.display = 'none';
+  document.getElementById('saveEditBtn').style.display = 'none';
+  document.getElementById('editModal').className = 'modal-overlay open';
+}
+
+function closeEditModal(e) {
+  if (e && e.target !== document.getElementById('editModal')) return;
+  document.getElementById('editModal').className = 'modal-overlay';
+  editingId = null;
+}
+
+function previewEdit() {
+  const h = JSON.parse(localStorage.getItem('mahjong_rank_history') || '[]');
+  const entry = h.find(e => e.id === editingId);
+  if (!entry) return;
+
+  const sorted = [...entry.results].sort((a,b) => a.rank - b.rank);
+  const names  = sorted.map((_,i) => document.getElementById('em-name-'+i).value.trim() || ('P'+(i+1)));
+  const scores = sorted.map((_,i) => parseInt(document.getElementById('em-score-'+i).value) || 0);
+
+  const newResults = computeResults(scores, names, entry.settings);
+
+  const prev = document.getElementById('editPreview');
+  prev.style.display = 'block';
+  prev.innerHTML = newResults.map(p => {
+    const totalCls = p.total > 0 ? 'pos' : p.total < 0 ? 'neg' : '';
+    const sign = p.total > 0 ? '+' : '';
+    const rawSign = p.raw > 0 ? '+' : '';
+    const umaSign = p.uma > 0 ? '+' : '';
+    return `<div class="mrp-row">
+      <span class="edit-rank-badge rank-${p.rank}" style="width:20px;height:20px;font-size:0.62rem">${p.rank}</span>
+      <span style="font-size:0.82rem;color:var(--text)">${p.name}</span>
+      <span style="font-size:0.72rem;color:var(--text3)">${rawSign}${p.raw}</span>
+      <span style="font-size:0.72rem;color:${p.uma>=0?'var(--green)':'var(--red2)'}">${umaSign}${p.uma}</span>
+      <span style="font-family:var(--font-serif);font-weight:700;color:${p.total>0?'var(--gold2)':p.total<0?'var(--red2)':'var(--text)'}">${sign}${p.total}</span>
+    </div>`;
+  }).join('');
+
+  // Store preview result for save
+  prev.dataset.preview = JSON.stringify(newResults);
+  document.getElementById('saveEditBtn').style.display = 'block';
+}
+
+function saveEdit() {
+  const prev = document.getElementById('editPreview');
+  const newResults = JSON.parse(prev.dataset.preview || '[]');
+  if (!newResults.length) return;
+
+  const h = JSON.parse(localStorage.getItem('mahjong_rank_history') || '[]');
+  const idx = h.findIndex(e => e.id === editingId);
+  if (idx < 0) return;
+
+  h[idx].results = newResults.map(p => ({
+    name: p.name, rank: p.rank, score: p.score,
+    total: p.total, raw: p.raw, uma: p.uma
+  }));
+  localStorage.setItem('mahjong_rank_history', JSON.stringify(h));
+
+  document.getElementById('editModal').className = 'modal-overlay';
+  editingId = null;
+  renderRankHistory();
+
+  // Also refresh the visible result card if it matches
+  displayRankResult(newResults, h[idx].settings);
+  document.getElementById('rankResultCard').className = 'rank-result-card show';
+}
+
+function deleteEntry() {
+  if (!confirm('この履歴を削除しますか？')) return;
+  const h = JSON.parse(localStorage.getItem('mahjong_rank_history') || '[]');
+  const filtered = h.filter(e => e.id !== editingId);
+  localStorage.setItem('mahjong_rank_history', JSON.stringify(filtered));
+  document.getElementById('editModal').className = 'modal-overlay';
+  editingId = null;
+  renderRankHistory();
+}
+
+// ─── PWA install ─────────────────────────────────────────────────────────
+let deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  if (!localStorage.getItem('install_dismissed')) {
+    document.getElementById('installBar').className = 'install-bar show';
+  }
+});
+function promptInstall() {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(() => {
+      deferredPrompt = null;
+      document.getElementById('installBar').className = 'install-bar';
+    });
+  }
+}
+function dismissInstall() {
+  document.getElementById('installBar').className = 'install-bar';
+  localStorage.setItem('install_dismissed', '1');
+}
+
+// ═══════════════════════════════════════════════════════════
+// ─── CHIP CALCULATOR ────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════
+
+let chipPlayerNames = ['','','','']; // cached from rank tab names
+
+function getPlayerNames() {
+  return [0,1,2,3].map(i => {
+    const el = document.getElementById('name-'+i);
+    return (el && el.value.trim()) || ('P'+(i+1));
+  });
+}
+
+function buildChipPlayerRows() {
+  const names = getPlayerNames();
+  const counts = [0,1,2,3].map(i => {
+    const el = document.getElementById('chip-count-'+i);
+    // デフォルトはchipPreset枚（初回は20枚）
+    return el ? parseInt(el.textContent||0) : chipPreset;
+  });
+  document.getElementById('chipPlayerRows').innerHTML = names.map((name, i) => `
+    <div class="chip-player-row">
+      <div class="player-rank-badge rank-${i+1}" style="font-size:0.7rem">${i+1}</div>
+      <span class="cp-name">${name}</span>
+      <button class="cp-btn" onclick="stepChip(${i},-1)">−</button>
+      <span class="cp-count" id="chip-count-${i}">${counts[i]}</span>
+      <button class="cp-btn" onclick="stepChip(${i},1)">＋</button>
+    </div>`).join('');
+  updateChipTotal();
+}
+
+function stepChip(i, d) {
+  const el = document.getElementById('chip-count-'+i);
+  if (!el) return;
+  const newVal = Math.max(0, parseInt(el.textContent||0) + d);
+  el.textContent = newVal;
+  // プリセットから外れたら「個別」をアクティブに
+  const counts = [0,1,2,3].map(j => {
+    const e = document.getElementById('chip-count-'+j);
+    return e ? parseInt(e.textContent||0) : 0;
+  });
+  const allSame = counts.every(c => c === counts[0]);
+  const btns = document.querySelectorAll('.chip-preset-btn');
+  btns.forEach(b => b.classList.remove('active'));
+  if (allSame && counts[0] === 10) btns[0].classList.add('active');
+  else if (allSame && counts[0] === 20) btns[1].classList.add('active');
+  else if (allSame && counts[0] === 30) btns[2].classList.add('active');
+  else btns[3].classList.add('active');
+  updateChipTotal();
+}
+
+function chipLiveUpdate() { /* live preview could go here */ }
+
+function calcChip() {
+  const names  = getPlayerNames();
+  const counts = [0,1,2,3].map(i => {
+    const el = document.getElementById('chip-count-'+i);
+    return el ? parseInt(el.textContent||0) : 0;
+  });
+  const value  = parseInt(document.getElementById('chipValue').value) || 100;
+  const total  = counts.reduce((a,b)=>a+b,0);
+  const avg    = total / 4;
+
+  const results = names.map((name, i) => ({
+    name, count: counts[i],
+    diff: counts[i] - avg,
+    yen: Math.round((counts[i] - avg) * value)
+  }));
+
+  // Display
+  const rc = document.getElementById('chipResultCard');
+  rc.style.display = 'block';
+  rc.style.animation = 'none';
+  rc.offsetHeight; // reflow
+  rc.style.animation = 'slideUp 0.3s ease';
+
+  document.getElementById('chipResultRows').innerHTML = results.map(r => {
+    const cls = r.yen > 0 ? 'pos' : r.yen < 0 ? 'neg' : 'zero';
+    const sign = r.yen > 0 ? '+' : '';
+    return `<div class="chip-result-row">
+      <div>
+        <div class="cr-name">${r.name}</div>
+        <div class="cr-chips">${r.count}枚（平均${avg}枚 ${r.diff>=0?'+':''}${r.diff}）</div>
+      </div>
+      <div class="cr-yen ${cls}">${sign}${r.yen.toLocaleString()}円</div>
+    </div>`;
+  }).join('');
+
+  setTimeout(()=>rc.scrollIntoView({behavior:'smooth',block:'nearest'}),100);
+
+  // Save history
+  const h = JSON.parse(localStorage.getItem('mahjong_chip_history')||'[]');
+  h.unshift({
+    id: Date.now(),
+    time: new Date().toLocaleString('ja-JP',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}),
+    value, total, results: results.map(r=>({name:r.name,count:r.count,yen:r.yen}))
+  });
+  if(h.length>20) h.pop();
+  localStorage.setItem('mahjong_chip_history', JSON.stringify(h));
+  renderChipHistory();
+}
+
+function renderChipHistory()  { _renderChipHistTo('chipHistListH'); }
+function renderChipHistoryH() { _renderChipHistTo('chipHistListH'); }
+function _renderChipHistTo(elId) {
+  const h = JSON.parse(localStorage.getItem('mahjong_chip_history')||'[]');
+  const el = document.getElementById(elId);
+  if(!el) return;
+  if(!h.length){ el.innerHTML='<div class="empty-state">まだ履歴がありません</div>'; return; }
+  const colors = ['var(--gold2)','#c0c0c0','#c2804a','var(--text3)'];
+  el.innerHTML = h.map(entry => {
+    const players = entry.results.map((r,i) => {
+      const sign = r.yen>0?'+':'';
+      const cls  = r.yen>0?'pos':r.yen<0?'neg':'';
+      return `<div class="chi-player">
+        <div class="chi-dot" style="background:${colors[i]}"></div>
+        <span class="chi-pname">${r.name}</span>
+        <span class="chi-pts ${cls}">${sign}${r.yen.toLocaleString()}円</span>
+      </div>`;
+    }).join('');
+    return `<div class="chip-hist-item">
+      <div class="chi-header">
+        <span class="chi-setting">1枚=${entry.value}円 / 合計${entry.total}枚</span>
+        <span class="chi-date">${entry.time}</span>
+      </div>
+      <div class="chi-players">${players}</div>
+    </div>`;
+  }).join('');
+}
+
+function clearChipHistory() {
+  if(confirm('チップ履歴をすべて削除しますか？')){
+    localStorage.removeItem('mahjong_chip_history');
+    renderChipHistoryH();
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// ─── TABLE FEE CALCULATOR ───────────────────────────────────
+// ═══════════════════════════════════════════════════════════
+
+let feeState = {
+  hours: 4,
+  playerCount: 4,
+  splitMode: 'equal',        // 'equal' | 'ladies'
+  ladiesGender: ['m','m','m','m'],  // 'm' | 'f'
+};
+let extraItems = [];  // [{name, price}]
+
+function stepHours(d) {
+  feeState.hours = Math.max(0.5, Math.min(24, feeState.hours + d));
+  document.getElementById('hoursVal').textContent = feeState.hours.toFixed(1);
+  feeLiveCalc();
+}
+
+function stepPlayers(d) {
+  feeState.playerCount = Math.max(2, Math.min(8, feeState.playerCount + d));
+  document.getElementById('playerCountVal').textContent = feeState.playerCount;
+}
+
+function setSplitMode(mode) {
+  feeState.splitMode = mode;
+  document.getElementById('split-equal').className  = 'discount-btn' + (mode==='equal'   ? ' active' : '');
+  document.getElementById('split-ladies').className = 'discount-btn' + (mode==='ladies'  ? ' active' : '');
+  document.getElementById('splitEqualSection').style.display  = mode==='equal'  ? '' : 'none';
+  document.getElementById('splitLadiesSection').style.display = mode==='ladies' ? '' : 'none';
+  if(mode==='ladies') buildLadiesPlayerList();
+}
+
+function buildLadiesPlayerList() {
+  const names = getPlayerNames();
+  document.getElementById('ladiesPlayerList').innerHTML = names.map((name,i) => {
+    const isF = feeState.ladiesGender[i]==='f';
+    return `<div style="display:flex;align-items:center;justify-content:space-between;padding:0.45rem 0;border-bottom:1px solid var(--border)">
+      <span style="font-size:0.88rem;color:var(--text)">${name}</span>
+      <button onclick="toggleGender(${i})" style="background:${isF?'var(--blue-dim)':'var(--bg3)'};border:1px solid ${isF?'var(--blue)':'var(--border)'};color:${isF?'#8ab2ff':'var(--text2)'};border-radius:7px;padding:0.3rem 0.7rem;font-size:0.78rem;cursor:pointer;font-weight:600">
+        ${isF?'👩 女性':'👨 男性'}
+      </button>
+    </div>`;
+  }).join('');
+}
+
+function toggleGender(i) {
+  feeState.ladiesGender[i] = feeState.ladiesGender[i]==='f' ? 'm' : 'f';
+  buildLadiesPlayerList();
+}
+
+function feeLiveCalc() {
+  const perHour  = parseInt(document.getElementById('feePerHour').value)||0;
+  const tableTotal = Math.round(perHour * feeState.hours);
+  document.getElementById('tableFeeTotal').textContent = tableTotal.toLocaleString() + '円';
+}
+
+function addExtraItem() {
+  extraItems.push({ name:'', price:0 });
+  renderExtraItems();
+}
+function removeExtraItem(i) {
+  extraItems.splice(i,1);
+  renderExtraItems();
+}
+function renderExtraItems() {
+  document.getElementById('extraItems').innerHTML = extraItems.map((item,i) => `
+    <div class="extra-item-row">
+      <input class="extra-name-input" type="text" placeholder="例：フリードリンク" value="${item.name}"
+        oninput="extraItems[${i}].name=this.value">
+      <input class="extra-price-input" type="number" placeholder="0" value="${item.price||''}"
+        inputmode="numeric" oninput="extraItems[${i}].price=parseInt(this.value)||0">
+      <button class="extra-del-btn" onclick="removeExtraItem(${i})">✕</button>
+    </div>`).join('');
+}
+
+function calcTableFee() {
+  const perHour   = parseInt(document.getElementById('feePerHour').value)||0;
+  const tableTotal = Math.round(perHour * feeState.hours);
+  const extraTotal = extraItems.reduce((a,b)=>a+(b.price||0),0);
+  const grandTotal = tableTotal + extraTotal;
+  const names = getPlayerNames();
+
+  let players = [];
+  if(feeState.splitMode === 'equal') {
+    const n = feeState.playerCount;
+    const each = Math.ceil(grandTotal / n);
+    players = Array.from({length:n},(_,i)=>({
+      name: i < 4 ? names[i] : `P${i+1}`,
+      gender:'m', amount: each, disc:false
+    }));
+  } else {
+    // 女性割引：お店が割り引く → 男性は均等額のまま、女性だけ割引後の金額
+    // 合計 = 全員均等 × 4 - 女性人数 × 割引額（お店負担分が合計から引かれる）
+    const discPerHour = parseInt(document.getElementById('ladiesDiscPerHour').value)||0;
+    const discPerPerson = discPerHour * feeState.hours; // 女性1人あたりの割引額
+    const genders = feeState.ladiesGender;
+    const fCount  = genders.filter(g=>g==='f').length;
+    const baseShare = Math.ceil(grandTotal / 4); // 全員均等のベース額
+    const femaleShare = Math.max(0, baseShare - discPerPerson); // 女性の支払額
+    players = names.map((name,i) => {
+      const isF = genders[i]==='f';
+      return { name, gender:genders[i], amount: isF ? femaleShare : baseShare, disc:isF };
+    });
+    // 合計表示は実際に集める額（割引後）
+  }
+
+  // Display
+  const rc = document.getElementById('feeResultCard');
+  rc.className = 'fee-result-card show';
+
+  // 実際に集める合計（女性割引後）
+  const collectedTotal = players.reduce((a,b)=>a+b.amount, 0);
+
+  const extraStr = extraItems.filter(e=>e.price>0).map(e=>`${e.name||'追加料金'} ${e.price.toLocaleString()}円`).join('、');
+  document.getElementById('feeResultTags').innerHTML =
+    `<span class="tag tag-gold">${feeState.hours}時間</span>` +
+    `<span class="tag tag-${feeState.splitMode==='ladies'?'blue':'red'}">${feeState.splitMode==='equal'?'均等割り':'女性割引'}</span>`;
+
+  document.getElementById('feeResultRows').innerHTML = players.map(p=>`
+    <div class="fee-result-row">
+      <div class="frr-left">
+        <span class="frr-name">${p.name}</span>
+        ${p.disc?'<span class="frr-disc">👩 割引</span>':''}
+      </div>
+      <span class="frr-amount">${p.amount.toLocaleString()}円</span>
+    </div>`).join('');
+
+  document.getElementById('feeTotalDisplay').textContent = collectedTotal.toLocaleString() + '円';
+
+  let bdParts = [`卓代: <span>${perHour.toLocaleString()}円 × ${feeState.hours}h = ${tableTotal.toLocaleString()}円</span>`];
+  if(extraItems.length) bdParts.push(`追加: <span>${extraStr||'—'} = ${extraTotal.toLocaleString()}円</span>`);
+  if(feeState.splitMode==='ladies') {
+    const discPerHour = parseInt(document.getElementById('ladiesDiscPerHour').value)||0;
+    const discPerPerson = discPerHour * feeState.hours;
+    const fCount = players.filter(p=>p.disc).length;
+    const mCount = players.filter(p=>!p.disc).length;
+    const shopDiscount = discPerPerson * fCount;
+    bdParts.push(`割り方: <span>均等${Math.ceil(grandTotal/4).toLocaleString()}円 → 女性割引 −${discPerPerson.toLocaleString()}円（お店負担）</span>`);
+    bdParts.push(`内訳: <span>男性${mCount}人 × ${Math.ceil(grandTotal/4).toLocaleString()}円、女性${fCount}人 × ${Math.max(0,Math.ceil(grandTotal/4)-discPerPerson).toLocaleString()}円（お店 −${shopDiscount.toLocaleString()}円）</span>`);
+  }
+  document.getElementById('feeBreakdown').innerHTML = bdParts.join('<br>');
+
+  setTimeout(()=>rc.scrollIntoView({behavior:'smooth',block:'nearest'}),100);
+
+  // Save history
+  const h = JSON.parse(localStorage.getItem('mahjong_fee_history')||'[]');
+  h.unshift({
+    id: Date.now(),
+    time: new Date().toLocaleString('ja-JP',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}),
+    hours:feeState.hours, perHour, tableTotal, extraTotal, grandTotal,
+    splitMode:feeState.splitMode,
+    players: players.map(p=>({name:p.name,amount:p.amount,disc:p.disc}))
+  });
+  if(h.length>20) h.pop();
+  localStorage.setItem('mahjong_fee_history', JSON.stringify(h));
+  renderFeeHistory();
+}
+
+function renderFeeHistory()  { _renderFeeHistTo('feeHistListH'); }
+function renderFeeHistoryH() { _renderFeeHistTo('feeHistListH'); }
+function _renderFeeHistTo(elId) {
+  const h = JSON.parse(localStorage.getItem('mahjong_fee_history')||'[]');
+  const el = document.getElementById(elId);
+  if(!el) return;
+  if(!h.length){ el.innerHTML='<div class="empty-state">まだ履歴がありません</div>'; return; }
+  el.innerHTML = h.map(entry => {
+    const rows = entry.players.map(p=>`
+      <div class="fhi-player">
+        <span>${p.disc?'👩 ':''}<span style="color:var(--text2)">${p.name}</span></span>
+        <span class="fhi-amt">${p.amount.toLocaleString()}円</span>
+      </div>`).join('');
+    return `<div class="fee-hist-item">
+      <div class="fhi-header">
+        <span class="fhi-title">${entry.hours}h × ${entry.perHour.toLocaleString()}円 合計${entry.grandTotal.toLocaleString()}円</span>
+        <span class="fhi-date">${entry.time}</span>
+      </div>
+      <div class="fhi-players">${rows}</div>
+    </div>`;
+  }).join('');
+}
+
+function clearFeeHistory() {
+  if(confirm('場代履歴をすべて削除しますか？')){
+    localStorage.removeItem('mahjong_fee_history');
+    renderFeeHistoryH();
+  }
+}
+
+
+// ═══════════════════════════════════════════════════════════
+// ─── SETTLE CALCULATOR ──────────────────────────────────────
+// ═══════════════════════════════════════════════════════════
+
+let settleRate = 100;
+
+function setRate(v, fromCustom) {
+  settleRate = v;
+  document.querySelectorAll('.rate-chip').forEach(el => {
+    const m = el.textContent.match(/=\s*([\d,]+)円/);
+    const chipVal = m ? parseInt(m[1].replace(/,/g,'')) : 0;
+    el.className = 'rate-chip' + (chipVal === v ? ' active' : '');
+  });
+  if (!fromCustom) document.getElementById('customRate').value = v;
+}
+
+function buildSettlePreview() {
+  const rankH = JSON.parse(localStorage.getItem('mahjong_rank_history') || '[]');
+  const chipH = JSON.parse(localStorage.getItem('mahjong_chip_history') || '[]');
+  const feeH  = JSON.parse(localStorage.getItem('mahjong_fee_history')  || '[]');
+  const lines = [];
+  if (rankH.length) {
+    const e = rankH[0];
+    lines.push(`🏆 順位（${e.time}）　` + e.results.map(p=>`${p.name}:${p.total>0?'+':''}${p.total}`).join('  '));
+  } else lines.push('🏆 順位：履歴なし');
+  if (chipH.length) {
+    const e = chipH[0];
+    lines.push(`C チップ（${e.time}）　` + e.results.map(r=>`${r.name}:${r.yen>0?'+':''}${r.yen.toLocaleString()}円`).join('  '));
+  } else lines.push('C チップ：履歴なし');
+  if (feeH.length) {
+    const e = feeH[0];
+    lines.push(`🏠 場代（${e.time}）　` + e.players.map(p=>`${p.name}:${p.amount.toLocaleString()}円`).join('  '));
+  } else lines.push('🏠 場代：履歴なし');
+  document.getElementById('settlePreview').innerHTML =
+    lines.map(l=>`<div style="padding:0.3rem 0;border-bottom:1px solid var(--border);font-size:0.75rem;color:var(--text2);line-height:1.5">${l}</div>`).join('');
+}
+
+function calcSettle() {
+  const useRank  = document.getElementById('st-rank').checked;
+  const useChip  = document.getElementById('st-chip').checked;
+  const useTable = document.getElementById('st-table').checked;
+  const rankH = JSON.parse(localStorage.getItem('mahjong_rank_history') || '[]');
+  const chipH = JSON.parse(localStorage.getItem('mahjong_chip_history') || '[]');
+  const feeH  = JSON.parse(localStorage.getItem('mahjong_fee_history')  || '[]');
+
+  let playerNames = [];
+  if (rankH.length)      playerNames = rankH[0].results.map(p=>p.name);
+  else if (chipH.length) playerNames = chipH[0].results.map(r=>r.name);
+  else if (feeH.length)  playerNames = feeH[0].players.map(p=>p.name);
+  if (!playerNames.length) { alert('まず各タブで計算してから精算してください'); return; }
+
+  const totals = {};
+  playerNames.forEach(n => { totals[n] = {rankPt:0,rankYen:0,chipYen:0,feeYen:0}; });
+
+  if (useRank && rankH.length) {
+    rankH[0].results.forEach(p => {
+      if (!totals[p.name]) totals[p.name] = {rankPt:0,rankYen:0,chipYen:0,feeYen:0};
+      totals[p.name].rankPt  = p.total;
+      totals[p.name].rankYen = Math.round(p.total * settleRate);
+    });
+  }
+  if (useChip && chipH.length) {
+    chipH[0].results.forEach(r => {
+      if (!totals[r.name]) totals[r.name] = {rankPt:0,rankYen:0,chipYen:0,feeYen:0};
+      totals[r.name].chipYen = r.yen;
+    });
+  }
+  if (useTable && feeH.length) {
+    feeH[0].players.forEach(p => {
+      if (!totals[p.name]) totals[p.name] = {rankPt:0,rankYen:0,chipYen:0,feeYen:0};
+      totals[p.name].feeYen = -p.amount;
+    });
+  }
+
+  const names = Object.keys(totals);
+
+  const blockHtml = names.map(name => {
+    const t = totals[name];
+    const grand = t.rankYen + t.chipYen + t.feeYen;
+    const grandCls = grand>0?'pos':grand<0?'neg':'zero';
+    const grandSign = grand>0?'+':'';
+    const rows = [];
+    if (useRank && rankH.length)
+      rows.push(`<div class="spb-row"><span class="spb-row-label">🏆 順位 ${t.rankPt>0?'+':''}${t.rankPt}pt × ${settleRate}円</span><span class="spb-row-val ${t.rankYen>=0?'pos':'neg'}">${t.rankYen>0?'+':''}${t.rankYen.toLocaleString()}円</span></div>`);
+    if (useChip && chipH.length)
+      rows.push(`<div class="spb-row"><span class="spb-row-label">C チップ</span><span class="spb-row-val ${t.chipYen>=0?'pos':'neg'}">${t.chipYen>0?'+':''}${t.chipYen.toLocaleString()}円</span></div>`);
+    if (useTable && feeH.length)
+      rows.push(`<div class="spb-row"><span class="spb-row-label">🏠 場代</span><span class="spb-row-val neg">−${(-t.feeYen).toLocaleString()}円</span></div>`);
+    return `<div class="settle-player-block"><div class="spb-header"><span class="spb-name">${name}</span><span class="spb-total-badge ${grandCls}">${grandSign}${grand.toLocaleString()}円</span></div><div class="spb-rows">${rows.join('')}</div></div>`;
+  }).join('');
+
+  const grandRows = names.map(name => {
+    const t = totals[name];
+    const grand = t.rankYen + t.chipYen + t.feeYen;
+    const cls = grand>0?'pos':grand<0?'neg':'zero';
+    const sign = grand>0?'+':'';
+    return `<div class="sgc-row"><span class="sgc-name">${name}</span><span class="sgc-val ${cls}">${sign}${grand.toLocaleString()}円</span></div>`;
+  }).join('');
+
+  const balances = names.map(name => {
+    const t = totals[name];
+    return { name, bal: t.rankYen + t.chipYen + t.feeYen };
+  });
+  const payments = minimizePayments(balances);
+  const payHtml = payments.length === 0
+    ? '<div style="padding:0.75rem 1rem;font-size:0.82rem;color:var(--text3)">精算なし（全員0円）</div>'
+    : payments.map(p=>`<div class="payment-row"><span class="pr-from">${p.from}</span><span class="pr-arrow">→</span><span class="pr-to">${p.to}</span><span class="pr-amount">${p.amount.toLocaleString()}円</span></div>`).join('');
+
+  document.getElementById('settlePlayerBlocks').innerHTML = blockHtml;
+  document.getElementById('settleGrandRows').innerHTML = grandRows;
+  document.getElementById('settlePaymentRows').innerHTML = payHtml;
+  document.getElementById('settleResultWrap').style.display = 'block';
+  setTimeout(()=>document.getElementById('settleResultWrap').scrollIntoView({behavior:'smooth',block:'start'}),100);
+}
+
+function minimizePayments(balances) {
+  const debtors   = balances.filter(b=>b.bal<0).map(b=>({...b,bal:-b.bal})).sort((a,b)=>b.bal-a.bal);
+  const creditors = balances.filter(b=>b.bal>0).map(b=>({...b})).sort((a,b)=>b.bal-a.bal);
+  const payments  = [];
+  let di=0, ci=0;
+  while(di<debtors.length && ci<creditors.length){
+    const d=debtors[di], c=creditors[ci];
+    const amount = Math.min(d.bal, c.bal);
+    if(amount>0) payments.push({from:d.name,to:c.name,amount});
+    d.bal-=amount; c.bal-=amount;
+    if(d.bal<=0) di++; if(c.bal<=0) ci++;
+  }
+  return payments;
+}
+
+// ─── Hamburger / Accordion menu ────────────────────────────────────────────
+function toggleAccordion() {
+  const btn  = document.getElementById('hamburgerBtn');
+  const menu = document.getElementById('accordionMenu');
+  const overlay = document.getElementById('accOverlay');
+  const isOpen = menu.classList.contains('open');
+  if (isOpen) {
+    menu.classList.remove('open');
+    overlay.classList.remove('open');
+    btn.classList.remove('open');
+  } else {
+    menu.classList.add('open');
+    overlay.classList.add('open');
+    btn.classList.add('open');
+  }
+}
+function closeAccordion() {
+  document.getElementById('accordionMenu').classList.remove('open');
+  document.getElementById('accOverlay').classList.remove('open');
+  document.getElementById('hamburgerBtn').classList.remove('open');
+}
+function accNav(tab) {
+  closeAccordion();
+  switchTab(tab);
+  // update active state
+  ['score','rank','chip','table','settle','history'].forEach(t => {
+    const el = document.getElementById('acc-'+t);
+    if (el) el.className = 'acc-item' + (t === tab ? ' active' : '');
+  });
+}
+
+// Update accordion active when switchTab is called directly
+const _origSwitchTab = switchTab;
+// patch: keep accordion in sync via accNav or direct call
+function updateAccordionActive(tab) {
+  ['score','rank','chip','table','settle','history'].forEach(t => {
+    const el = document.getElementById('acc-'+t);
+    if (el) el.className = 'acc-item' + (t === tab ? ' active' : '');
+  });
+}
+
+// ─── Chip preset ────────────────────────────────────────────────────────────
+let chipPreset = 20; // デフォルト20枚
+
+function setChipPreset(n) {
+  chipPreset = n;
+  // update preset button active states
+  document.querySelectorAll('.chip-preset-btn').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  if (n === 10) document.querySelectorAll('.chip-preset-btn')[0].classList.add('active');
+  else if (n === 20) document.querySelectorAll('.chip-preset-btn')[1].classList.add('active');
+  else if (n === 30) document.querySelectorAll('.chip-preset-btn')[2].classList.add('active');
+  else document.querySelectorAll('.chip-preset-btn')[3].classList.add('active');
+
+  if (n > 0) {
+    // set all players to n
+    for (let i = 0; i < 4; i++) {
+      const el = document.getElementById('chip-count-' + i);
+      if (el) el.textContent = n;
+    }
+    updateChipTotal();
+  }
+}
+
+function updateChipTotal() {
+  const counts = [0,1,2,3].map(i => {
+    const el = document.getElementById('chip-count-'+i);
+    return el ? parseInt(el.textContent||0) : 0;
+  });
+  const total = counts.reduce((a,b)=>a+b,0);
+  const el = document.getElementById('chipTotalDisplay');
+  if (el) el.textContent = total + '枚';
+}
+
+
+
+// ─── Reset functions ─────────────────────────────────────────────────────
+
+function resetRank() {
+  // スコアを開始点数に戻す
+  for (let i = 0; i < 4; i++) {
+    document.getElementById('score-' + i).value = rankState.startPt;
+  }
+  // 結果カードを非表示
+  document.getElementById('rankResultCard').className = 'rank-result-card';
+  // 順位バッジをリセット
+  liveUpdate();
+}
+
+function resetChip() {
+  // 全員をプリセット枚数に戻す
+  setChipPreset(chipPreset);
+  // 結果カードを非表示
+  const rc = document.getElementById('chipResultCard');
+  rc.style.display = 'none';
+  document.getElementById('chipResultRows').innerHTML = '';
+}
+
+function resetTableFee() {
+  // 時間を4時間に戻す
+  feeState.hours = 4;
+  document.getElementById('hoursVal').textContent = '4.0';
+  feeLiveCalc();
+  // 追加料金をクリア
+  extraItems = [];
+  renderExtraItems();
+  // 分割モードを均等割りに戻す
+  setSplitMode('equal');
+  feeState.playerCount = 4;
+  document.getElementById('playerCountVal').textContent = '4';
+  // 結果カードを非表示
+  document.getElementById('feeResultCard').className = 'fee-result-card';
+}
+
+function resetSettle() {
+  // チェックボックスを全てオンに戻す
+  document.getElementById('st-rank').checked  = true;
+  document.getElementById('st-chip').checked  = true;
+  document.getElementById('st-table').checked = true;
+  // レートをデフォルト(100)に戻す
+  setRate(100);
+  // 結果を非表示
+  document.getElementById('settleResultWrap').style.display = 'none';
+  document.getElementById('settlePlayerBlocks').innerHTML = '';
+  document.getElementById('settleGrandRows').innerHTML = '';
+  document.getElementById('settlePaymentRows').innerHTML = '';
+  // プレビューを再描画
+  buildSettlePreview();
+}
+
+// ─── Init ──────────────────────────────────────────────────────────────────
+renderTable();
+liveUpdate();
+renderExtraItems();
+feeLiveCalc();
+updateAccordionActive('score');
+
+// ─── Service Worker ────────────────────────────────────────────────────────
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
+  });
+}
+</script>
+<footer class="app-footer">
+  <span class="footer-logo">© STUDIO KAZHA</span>
+</footer>
+
+</body>
+</html>
