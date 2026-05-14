@@ -576,7 +576,9 @@
     background: transparent;
     border: none;
     color: var(--text3);
-    padding: 0.65rem 0.5rem;
+    padding: 0 0.5rem;
+    padding-top: 0.55rem;
+    padding-bottom: 0.45rem;
     font-family: var(--font-sans);
     font-size: 0.8rem;
     font-weight: 500;
@@ -584,14 +586,16 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 3px;
+    justify-content: flex-end;
+    gap: 2px;
     transition: all 0.15s;
     position: relative;
+    height: 52px;
   }
   .tab-item::after {
     content: '';
     position: absolute;
-    bottom: 0; left: 20%; right: 20%;
+    bottom: 0; left: 15%; right: 15%;
     height: 2px;
     background: var(--gold);
     border-radius: 2px 2px 0 0;
@@ -600,8 +604,19 @@
   }
   .tab-item.active { color: var(--gold2); }
   .tab-item.active::after { opacity: 1; }
-  .tab-icon { font-size: 1.1rem; }
-  .tab-label { font-size: 0.7rem; }
+  .tab-icon {
+    font-size: 1.05rem;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 1.2rem;
+  }
+  .tab-label {
+    font-size: 0.65rem;
+    line-height: 1;
+    white-space: nowrap;
+  }
 
   /* ─── Ranking page ─── */
   .rank-view { width: 100%; display: flex; flex-direction: column; align-items: center; display: none; }
@@ -1674,11 +1689,11 @@
   </button>
   <button class="acc-item" id="acc-chip" onclick="accNav('chip')">
     <span class="acc-icon" style="font-family:var(--font-serif);font-weight:900;font-size:0.95rem">C</span>
-    <span class="acc-label">チップ</span>
+    <span class="acc-label">チップ計算</span>
   </button>
   <button class="acc-item" id="acc-table" onclick="accNav('table')">
     <span class="acc-icon">🏠</span>
-    <span class="acc-label">場代</span>
+    <span class="acc-label">場代計算</span>
   </button>
   <div class="acc-divider"></div>
   <button class="acc-item" id="acc-settle" onclick="accNav('settle')">
@@ -1695,11 +1710,11 @@
 <div class="tab-bar" id="tabBar">
   <button class="tab-item active" id="tab-score" onclick="switchTab('score')">
     <span class="tab-icon">🀄</span>
-    <span class="tab-label">点数計算</span>
+    <span class="tab-label">点数</span>
   </button>
   <button class="tab-item" id="tab-rank" onclick="switchTab('rank')">
     <span class="tab-icon">🏆</span>
-    <span class="tab-label">順位計算</span>
+    <span class="tab-label">順位</span>
   </button>
   <button class="tab-item" id="tab-chip" onclick="switchTab('chip')">
     <span class="tab-icon" style="font-family:var(--font-serif);font-weight:900;font-size:1rem">C</span>
@@ -1910,7 +1925,7 @@
       </div>
     </div>
     <div class="settings-row">
-      <span class="settings-label">返し点（オカ基準）</span>
+      <span class="settings-label">返し点<br><span style="font-size:0.72rem;color:var(--text3)">(オカ基準)</span></span>
       <div class="settings-chips" id="returnChips">
         <button class="s-chip active-gold" onclick="setReturn(30000)">30,000</button>
         <button class="s-chip" onclick="setReturn(35000)">35,000</button>
@@ -1933,7 +1948,7 @@
         <label>最終点数</label>
         <div class="score-stepper">
           <button class="ss-btn" onclick="stepScore(0,-100)">−</button>
-          <input class="score-direct-input" id="score-0" type="number" value="25000" inputmode="numeric" oninput="liveUpdate()">
+          <input class="score-direct-input" id="score-0" type="number" value="25000" inputmode="numeric" min="100" step="100" oninput="liveUpdate()">
           <button class="ss-btn" onclick="stepScore(0,100)">＋</button>
         </div>
       </div>
@@ -1960,7 +1975,7 @@
         <label>最終点数</label>
         <div class="score-stepper">
           <button class="ss-btn" onclick="stepScore(1,-100)">−</button>
-          <input class="score-direct-input" id="score-1" type="number" value="25000" inputmode="numeric" oninput="liveUpdate()">
+          <input class="score-direct-input" id="score-1" type="number" value="25000" inputmode="numeric" min="100" step="100" oninput="liveUpdate()">
           <button class="ss-btn" onclick="stepScore(1,100)">＋</button>
         </div>
       </div>
@@ -1987,7 +2002,7 @@
         <label>最終点数</label>
         <div class="score-stepper">
           <button class="ss-btn" onclick="stepScore(2,-100)">−</button>
-          <input class="score-direct-input" id="score-2" type="number" value="25000" inputmode="numeric" oninput="liveUpdate()">
+          <input class="score-direct-input" id="score-2" type="number" value="25000" inputmode="numeric" min="100" step="100" oninput="liveUpdate()">
           <button class="ss-btn" onclick="stepScore(2,100)">＋</button>
         </div>
       </div>
@@ -2014,7 +2029,7 @@
         <label>最終点数</label>
         <div class="score-stepper">
           <button class="ss-btn" onclick="stepScore(3,-100)">−</button>
-          <input class="score-direct-input" id="score-3" type="number" value="25000" inputmode="numeric" oninput="liveUpdate()">
+          <input class="score-direct-input" id="score-3" type="number" value="25000" inputmode="numeric" min="100" step="100" oninput="liveUpdate()">
           <button class="ss-btn" onclick="stepScore(3,100)">＋</button>
         </div>
       </div>
@@ -2560,7 +2575,7 @@ function renderTable() {
   const container = document.getElementById('tableContainer');
 
   let html = '<table class="score-table"><thead><tr>';
-  html += '<th style="font-size:0.62rem;min-width:36px">符＼飜<br><span style="font-size:0.55rem;color:var(--text3)">ロン/ツモ</span></th>';
+  html += '<th style="font-size:0.62rem;min-width:36px;line-height:1.5">符＼飜<br><span style="color:var(--text2);font-size:0.6rem">ロン</span><br><span style="color:var(--border2);font-size:0.55rem">───</span><br><span style="color:var(--text3);font-size:0.58rem">ツモ</span></th>';
   HAN_LIST.forEach(h => {
     const label = typeof h === 'string' ? h.slice(0,1)+'満' : h+'飜';
     html += `<th style="font-size:0.68rem">${label}</th>`;
@@ -2769,12 +2784,12 @@ function setReturn(v) {
 
 function stepScore(i, d) {
   const el = document.getElementById('score-' + i);
-  el.value = (parseInt(el.value) || 0) + d;
+  el.value = Math.max(100, (parseInt(el.value) || 0) + d);
   liveUpdate();
 }
 
 function liveUpdate() {
-  const scores = [0,1,2,3].map(i => parseInt(document.getElementById('score-'+i).value) || 0);
+  const scores = [0,1,2,3].map(i => Math.max(100, parseInt(document.getElementById('score-'+i).value) || 100));
   const sum = scores.reduce((a,b) => a+b, 0);
 
   // Sum check
@@ -2814,7 +2829,7 @@ function roundGo6(x) {
 }
 
 function calcRanking() {
-  const scores = [0,1,2,3].map(i => parseInt(document.getElementById('score-'+i).value) || 0);
+  const scores = [0,1,2,3].map(i => Math.max(100, parseInt(document.getElementById('score-'+i).value) || 100));
   const names  = [0,1,2,3].map(i => document.getElementById('name-'+i).value.trim() || ('P'+(i+1)));
 
   const results = computeResults(scores, names, rankState);
