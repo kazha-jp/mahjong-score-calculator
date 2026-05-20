@@ -158,6 +158,7 @@
     color: var(--text3);
     margin-top: 2px;
   }
+  .tog-btn:hover { border-color: var(--border2); color: var(--text); background: var(--surface2); }
   .tog-btn:active { transform: scale(0.97); }
   .tog-btn.active-gold {
     background: var(--gold-dim);
@@ -225,6 +226,7 @@
     user-select: none;
     font-weight: 300;
   }
+  .num-btn:hover  { background: var(--surface2); border-color: var(--border2); }
   .num-btn:active { background: var(--surface); transform: scale(0.93); }
 
   /* ─── Divider ─── */
@@ -252,6 +254,7 @@
     text-align: center;
     transition: all 0.12s;
   }
+  .fu-chip:hover { border-color: var(--blue); color: #8ab2ff; background: var(--blue-dim); }
   .fu-chip:active { transform: scale(0.95); }
   .fu-chip.active {
     background: var(--blue-dim);
@@ -277,6 +280,7 @@
     transition: all 0.15s;
     box-shadow: 0 4px 20px rgba(212,168,67,0.3);
   }
+  .calc-btn:hover  { filter: brightness(1.1); box-shadow: 0 6px 24px rgba(212,168,67,0.45); }
   .calc-btn:active { transform: scale(0.98); box-shadow: 0 2px 10px rgba(212,168,67,0.2); }
   .calc-btn::after {
     content: '';
@@ -419,7 +423,7 @@
     cursor: pointer;
     transition: all 0.12s;
   }
-  .table-tab.active {
+  .table-tab:hover { background: var(--gold-dim); color: var(--gold2); border-color: var(--gold); }
     background: var(--gold-dim);
     border-color: var(--gold);
     color: var(--gold2);
@@ -517,7 +521,8 @@
     margin-top: 0.5rem;
     transition: all 0.15s;
   }
-  .clear-btn:active { border-color: var(--red); color: var(--red2); }
+  .clear-btn:hover  { border-color: var(--red); color: var(--red2); background: var(--red-dim); }
+  .clear-btn:active { border-color: var(--red); color: var(--red2); opacity: 0.8; }
   .empty-state {
     text-align: center;
     padding: 2rem 1rem;
@@ -725,6 +730,7 @@
     transition: all 0.12s;
     font-weight: 300;
   }
+  .ss-btn:hover  { background: var(--surface2); border-color: var(--gold); color: var(--gold2); }
   .ss-btn:active { transform: scale(0.92); }
   .ss-val {
     font-family: var(--font-serif);
@@ -789,6 +795,7 @@
     transition: all 0.12s;
     font-weight: 500;
   }
+  .s-chip:hover  { border-color: var(--border2); color: var(--text); background: var(--surface2); }
   .s-chip:active { transform: scale(0.95); }
   .s-chip.active-gold { background: var(--gold-dim); border-color: var(--gold); color: var(--gold2); }
   .s-chip.active-blue { background: var(--blue-dim); border-color: var(--blue); color: #8ab2ff; }
@@ -825,32 +832,33 @@
 
   .rr-row {
     display: grid;
-    grid-template-columns: 36px 1fr auto auto auto;
+    grid-template-columns: 28px 1fr auto auto auto auto;
     align-items: center;
-    gap: 8px;
-    padding: 0.7rem 1.1rem;
+    gap: 5px;
+    padding: 0.65rem 0.9rem;
     border-bottom: 1px solid var(--border);
   }
   .rr-row:last-child { border-bottom: none; }
   .rr-row.winner { background: rgba(212,168,67,0.06); }
   .rr-name {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     font-weight: 500;
     color: var(--text);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-  .rr-raw { font-size: 0.78rem; color: var(--text3); text-align: right; }
-  .rr-uma { font-size: 0.78rem; text-align: right; }
+  .rr-score { font-size: 0.75rem; color: var(--text2); text-align: right; white-space: nowrap; }
+  .rr-raw { font-size: 0.72rem; color: var(--text3); text-align: right; }
+  .rr-uma { font-size: 0.72rem; text-align: right; }
   .rr-uma.pos { color: var(--green); }
   .rr-uma.neg { color: var(--red2); }
   .rr-total {
     font-family: var(--font-serif);
-    font-size: 1rem;
+    font-size: 0.95rem;
     font-weight: 700;
     text-align: right;
-    min-width: 5ch;
+    min-width: 4ch;
   }
   .rr-total.pos { color: var(--gold2); }
   .rr-total.neg { color: var(--red2); }
@@ -932,6 +940,7 @@
     user-select: none;
     transition: all 0.12s;
   }
+  .cp-btn:hover  { background: var(--surface2); border-color: var(--border2); }
   .cp-btn:active { transform: scale(0.92); background: var(--surface); }
 
   /* chip result */
@@ -1031,6 +1040,7 @@
     display: flex; align-items: center; justify-content: center;
     user-select: none; transition: all 0.12s;
   }
+  .fee-step-btn:hover  { border-color: var(--gold); color: var(--gold2); }
   .fee-step-btn:active { transform: scale(0.92); }
   .fee-step-val {
     font-family: var(--font-serif);
@@ -1086,6 +1096,7 @@
     display: flex; align-items: center; justify-content: center;
     flex-shrink: 0;
   }
+  .extra-del-btn:hover  { border-color: var(--red); color: var(--red2); background: var(--red-dim); }
   .extra-del-btn:active { border-color: var(--red); color: var(--red2); }
   .add-extra-btn {
     width: 100%;
@@ -1099,6 +1110,7 @@
     margin-top: 0.3rem;
     transition: all 0.15s;
   }
+  .add-extra-btn:hover  { border-color: var(--gold); color: var(--gold2); background: var(--gold-dim); }
   .add-extra-btn:active { border-color: var(--gold); color: var(--gold2); }
 
   /* discount toggle */
@@ -1237,6 +1249,7 @@
     font-weight: 500;
   }
   .rate-chip.active { background:var(--gold-dim); border-color:var(--gold); color:var(--gold2); }
+  .rate-chip:hover  { border-color: var(--gold); color: var(--gold2); background: var(--gold-dim); }
   .rate-chip:active { transform:scale(0.95); }
 
   /* settle player block */
@@ -1410,6 +1423,7 @@
     font-family: var(--font-sans);
     font-weight: 500;
   }
+  .acc-item:hover  { background: var(--surface2); color: var(--text); }
   .acc-item:active { background: var(--surface2); }
   .acc-item.active { color: var(--gold2); background: var(--gold-dim); }
   .acc-item .acc-icon { font-size: 1rem; width: 20px; text-align: center; flex-shrink: 0; }
@@ -1447,8 +1461,112 @@
     font-size: 0.8rem; font-weight: 600;
     cursor: pointer; transition: all 0.12s;
   }
+  .chip-preset-btn:hover  { border-color: var(--border2); color: var(--text); background: var(--surface2); }
   .chip-preset-btn:active { transform: scale(0.95); }
   .chip-preset-btn.active { background:var(--gold-dim); border-color:var(--gold); color:var(--gold2); }
+
+  /* ─── Score sign toggle ─── */
+  /* ─── Score step buttons ─── */
+  .score-step-btn {
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: 7px;
+    padding: 0.35rem 0.1rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--text2);
+    transition: all 0.12s;
+    font-family: var(--font-sans);
+  }
+  .score-step-btn:nth-child(1),
+  .score-step-btn:nth-child(2) {
+    color: var(--red2);
+    border-color: rgba(224,85,85,0.3);
+    background: var(--red-dim);
+  }
+  .score-step-btn:nth-child(3),
+  .score-step-btn:nth-child(4) {
+    color: var(--green);
+    border-color: rgba(76,175,125,0.3);
+    background: var(--green-dim);
+  }
+  .score-step-btn:hover { filter: brightness(1.15); }
+  .score-step-btn:active { transform: scale(0.94); opacity: 0.8; }
+
+  /* ─── Preset page ─── */
+  .preset-view { width:100%; display:none; flex-direction:column; align-items:center; }
+  .preset-view.show { display:flex; }
+
+  .preset-slot {
+    width: calc(100% - 2rem);
+    max-width: 480px;
+    margin: 0.5rem 1rem 0;
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    position: relative;
+  }
+  .preset-slot::before {
+    content:''; position:absolute; top:0;left:0;right:0;height:2px;
+    background:linear-gradient(90deg,var(--gold),var(--red),var(--gold)); opacity:0.4;
+  }
+  .preset-slot-header {
+    display:flex; align-items:center; gap:10px;
+    padding: 0.85rem 1rem 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .preset-number {
+    width:26px; height:26px; border-radius:50%;
+    background: var(--gold-dim); border:1px solid var(--gold);
+    color:var(--gold2); font-size:0.78rem; font-weight:900;
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+  .preset-name-input {
+    flex:1; background:transparent; border:none; outline:none;
+    color:var(--text); font-family:var(--font-sans);
+    font-size:0.95rem; font-weight:700;
+  }
+  .preset-name-input::placeholder { color:var(--text3); font-weight:400; }
+  .preset-actions { display:flex; gap:6px; }
+  .preset-load-btn {
+    background:var(--gold-dim); border:1px solid var(--gold);
+    color:var(--gold2); border-radius:7px;
+    padding:0.3rem 0.7rem; font-size:0.75rem; font-weight:700;
+    cursor:pointer; font-family:var(--font-sans); transition:all 0.12s;
+  }
+  .preset-load-btn:hover { filter: brightness(1.1); }
+  .preset-load-btn:active { opacity:0.7; transform:scale(0.95); }
+  .preset-save-btn:hover  { border-color: var(--border2); color: var(--text); background: var(--surface2); }
+  .preset-save-btn:active { opacity:0.7; transform:scale(0.95); }
+    background:var(--surface2); border:1px solid var(--border2);
+    color:var(--text2); border-radius:7px;
+    padding:0.3rem 0.7rem; font-size:0.75rem; font-weight:600;
+    cursor:pointer; font-family:var(--font-sans); transition:all 0.12s;
+  }
+  .preset-save-btn:active { opacity:0.7; transform:scale(0.95); }
+
+  .preset-body { padding:0.6rem 1rem 0.8rem; }
+  .preset-row {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:0.28rem 0; border-bottom:1px solid var(--border);
+    font-size:0.8rem;
+  }
+  .preset-row:last-child { border-bottom:none; }
+  .preset-row-label { color:var(--text3); }
+  .preset-row-val { color:var(--text); font-weight:600; }
+  .preset-empty { color:var(--text3); font-size:0.8rem; padding:0.5rem 0; text-align:center; }
+
+  .preset-hint {
+    width:calc(100% - 2rem); max-width:480px;
+    margin:0.5rem 1rem 0;
+    font-size:0.72rem; color:var(--text3); line-height:1.7;
+    padding:0.6rem 0.9rem;
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:10px;
+  }
 
   /* ─── Edit modal ─── */
   .modal-overlay {
@@ -1539,6 +1657,7 @@
     padding: 0.8rem; cursor: pointer;
     box-shadow: 0 3px 12px rgba(212,168,67,0.3);
   }
+  .modal-recalc-btn:hover  { filter: brightness(1.08); }
   .modal-recalc-btn:active { opacity: 0.85; transform: scale(0.98); }
   .modal-delete-btn {
     width: calc(100% - 2.5rem); margin: 0.5rem 1.25rem 0;
@@ -1549,6 +1668,7 @@
     padding: 0.65rem; cursor: pointer;
     transition: border-color 0.15s;
   }
+  .modal-delete-btn:hover  { border-color: var(--red); background: var(--red-dim); }
   .modal-delete-btn:active { border-color: var(--red); }
   .modal-cancel-btn {
     width: calc(100% - 2.5rem); margin: 0.4rem 1.25rem 0;
@@ -1556,8 +1676,9 @@
     border: 1px solid var(--border);
     border-radius: 10px; color: var(--text3);
     font-family: var(--font-sans); font-size: 0.82rem;
-    padding: 0.65rem; cursor: pointer;
+    padding: 0.65rem; cursor: pointer; transition: all 0.15s;
   }
+  .modal-cancel-btn:hover { border-color: var(--border2); color: var(--text2); }
   .modal-result-preview {
     margin: 0.5rem 1.25rem 0;
     background: var(--bg3);
@@ -1703,6 +1824,11 @@
   <button class="acc-item" id="acc-history" onclick="accNav('history')">
     <span class="acc-icon">📋</span>
     <span class="acc-label">履歴</span>
+  </button>
+  <div class="acc-divider"></div>
+  <button class="acc-item" id="acc-preset" onclick="accNav('preset')">
+    <span class="acc-icon">⚙️</span>
+    <span class="acc-label">設定プリセット</span>
   </button>
 </div>
 
@@ -1865,18 +1991,12 @@
     <div style="width:calc(100% - 2rem);max-width:480px;margin:0.25rem 1rem;" id="historyList">
       <div class="empty-state">まだ履歴がありません</div>
     </div>
-    <div style="width:calc(100% - 2rem);max-width:480px;margin:0 1rem 1rem;">
-      <button class="clear-btn" onclick="clearHistory()">点数履歴をすべて削除</button>
-    </div>
   </div>
 
   <!-- 順位履歴 -->
   <div id="hsec-rank" style="width:100%;display:none;flex-direction:column;align-items:center">
     <div style="width:calc(100% - 2rem);max-width:480px;margin:0.25rem 1rem;" id="rankHistListH">
       <div class="empty-state">まだ精算履歴がありません</div>
-    </div>
-    <div style="width:calc(100% - 2rem);max-width:480px;margin:0 1rem 1rem;">
-      <button class="clear-btn" onclick="clearRankHistory()">順位履歴をすべて削除</button>
     </div>
   </div>
 
@@ -1885,9 +2005,6 @@
     <div style="width:calc(100% - 2rem);max-width:480px;margin:0.25rem 1rem;" id="chipHistListH">
       <div class="empty-state">まだ履歴がありません</div>
     </div>
-    <div style="width:calc(100% - 2rem);max-width:480px;margin:0 1rem 1rem;">
-      <button class="clear-btn" onclick="clearChipHistory()">チップ履歴をすべて削除</button>
-    </div>
   </div>
 
   <!-- 場代履歴 -->
@@ -1895,9 +2012,11 @@
     <div style="width:calc(100% - 2rem);max-width:480px;margin:0.25rem 1rem;" id="feeHistListH">
       <div class="empty-state">まだ履歴がありません</div>
     </div>
-    <div style="width:calc(100% - 2rem);max-width:480px;margin:0 1rem 1rem;">
-      <button class="clear-btn" onclick="clearFeeHistory()">場代履歴をすべて削除</button>
-    </div>
+  </div>
+
+  <!-- 削除ボタン（常時表示・サブタブ切替で対象が変わる） -->
+  <div style="width:calc(100% - 2rem);max-width:480px;margin:0.25rem 1rem 1rem;">
+    <button class="clear-btn" id="clearHistBtn" onclick="clearCurrentHist()">この履歴をすべて削除</button>
   </div>
 </div>
 
@@ -1922,6 +2041,37 @@
         <button class="s-chip" onclick="setUma('10-30')">10-30</button>
         <button class="s-chip" onclick="setUma('20-30')">20-30</button>
         <button class="s-chip" onclick="setUma('20-40')">20-40</button>
+        <button class="s-chip" id="umaCustomBtn" onclick="toggleUmaCustom()">カスタム</button>
+      </div>
+    </div>
+    <!-- カスタムウマ入力（ウマ行の下に独立展開） -->
+    <div id="umaCustomArea" style="display:none;margin-bottom:0.6rem;padding:0.75rem;background:var(--bg3);border-radius:10px;border:1px solid var(--border)">
+      <div style="font-size:0.68rem;color:var(--text3);margin-bottom:0.5rem">1位〜4位のウマを入力（3・4位はマイナス値）</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+          <span style="font-size:0.65rem;color:var(--gold2);font-weight:700">1位</span>
+          <input class="fee-input" id="uma1" type="number" value="20" inputmode="numeric"
+            style="width:100%;text-align:center;padding:0.4rem 0.2rem;font-size:0.95rem"
+            oninput="applyCustomUma()">
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+          <span style="font-size:0.65rem;color:#c0c0c0;font-weight:700">2位</span>
+          <input class="fee-input" id="uma2" type="number" value="10" inputmode="numeric"
+            style="width:100%;text-align:center;padding:0.4rem 0.2rem;font-size:0.95rem"
+            oninput="applyCustomUma()">
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+          <span style="font-size:0.65rem;color:#c2804a;font-weight:700">3位</span>
+          <input class="fee-input" id="uma3" type="number" value="-10" inputmode="numeric"
+            style="width:100%;text-align:center;padding:0.4rem 0.2rem;font-size:0.95rem"
+            oninput="applyCustomUma()">
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+          <span style="font-size:0.65rem;color:var(--text3);font-weight:700">4位</span>
+          <input class="fee-input" id="uma4" type="number" value="-20" inputmode="numeric"
+            style="width:100%;text-align:center;padding:0.4rem 0.2rem;font-size:0.95rem"
+            oninput="applyCustomUma()">
+        </div>
       </div>
     </div>
     <div class="settings-row">
@@ -1944,12 +2094,19 @@
       <input class="player-name-input" id="name-0" type="text" placeholder="プレイヤー1" maxlength="10" oninput="liveUpdate()">
     </div>
     <div class="player-score-row">
-      <div class="score-input-wrap">
+      <div class="score-input-wrap" style="flex:1">
         <label>最終点数</label>
-        <div class="score-stepper">
-          <button class="ss-btn" onclick="stepScore(0,-100)">−</button>
-          <input class="score-direct-input" id="score-0" type="number" value="25000" inputmode="numeric" min="100" step="100" oninput="liveUpdate()">
-          <button class="ss-btn" onclick="stepScore(0,100)">＋</button>
+        <div style="display:flex;align-items:center;justify-content:center;padding:0.3rem 0.5rem 0">
+          <input class="score-direct-input" id="score-0" type="text" inputmode="numeric"
+            value="" placeholder="— 点 —"
+            oninput="onScoreInput(0)" onblur="onScoreBlur(0)"
+            style="width:100%;text-align:center;font-size:1.4rem;background:transparent;border:none;outline:none;font-family:var(--font-serif);font-weight:700;color:var(--text);padding:0">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:4px;padding:0.35rem 0.5rem 0.5rem">
+          <button class="score-step-btn" onclick="stepScore(0,-1000)">−1000</button>
+          <button class="score-step-btn" onclick="stepScore(0,-100)">−100</button>
+          <button class="score-step-btn" onclick="stepScore(0,100)">+100</button>
+          <button class="score-step-btn" onclick="stepScore(0,1000)">+1000</button>
         </div>
       </div>
       <div class="score-sep">点</div>
@@ -1971,12 +2128,19 @@
       <input class="player-name-input" id="name-1" type="text" placeholder="プレイヤー2" maxlength="10" oninput="liveUpdate()">
     </div>
     <div class="player-score-row">
-      <div class="score-input-wrap">
+      <div class="score-input-wrap" style="flex:1">
         <label>最終点数</label>
-        <div class="score-stepper">
-          <button class="ss-btn" onclick="stepScore(1,-100)">−</button>
-          <input class="score-direct-input" id="score-1" type="number" value="25000" inputmode="numeric" min="100" step="100" oninput="liveUpdate()">
-          <button class="ss-btn" onclick="stepScore(1,100)">＋</button>
+        <div style="display:flex;align-items:center;justify-content:center;padding:0.3rem 0.5rem 0">
+          <input class="score-direct-input" id="score-1" type="text" inputmode="numeric"
+            value="" placeholder="— 点 —"
+            oninput="onScoreInput(1)" onblur="onScoreBlur(1)"
+            style="width:100%;text-align:center;font-size:1.4rem;background:transparent;border:none;outline:none;font-family:var(--font-serif);font-weight:700;color:var(--text);padding:0">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:4px;padding:0.35rem 0.5rem 0.5rem">
+          <button class="score-step-btn" onclick="stepScore(1,-1000)">−1000</button>
+          <button class="score-step-btn" onclick="stepScore(1,-100)">−100</button>
+          <button class="score-step-btn" onclick="stepScore(1,100)">+100</button>
+          <button class="score-step-btn" onclick="stepScore(1,1000)">+1000</button>
         </div>
       </div>
       <div class="score-sep">点</div>
@@ -1998,12 +2162,19 @@
       <input class="player-name-input" id="name-2" type="text" placeholder="プレイヤー3" maxlength="10" oninput="liveUpdate()">
     </div>
     <div class="player-score-row">
-      <div class="score-input-wrap">
+      <div class="score-input-wrap" style="flex:1">
         <label>最終点数</label>
-        <div class="score-stepper">
-          <button class="ss-btn" onclick="stepScore(2,-100)">−</button>
-          <input class="score-direct-input" id="score-2" type="number" value="25000" inputmode="numeric" min="100" step="100" oninput="liveUpdate()">
-          <button class="ss-btn" onclick="stepScore(2,100)">＋</button>
+        <div style="display:flex;align-items:center;justify-content:center;padding:0.3rem 0.5rem 0">
+          <input class="score-direct-input" id="score-2" type="text" inputmode="numeric"
+            value="" placeholder="— 点 —"
+            oninput="onScoreInput(2)" onblur="onScoreBlur(2)"
+            style="width:100%;text-align:center;font-size:1.4rem;background:transparent;border:none;outline:none;font-family:var(--font-serif);font-weight:700;color:var(--text);padding:0">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:4px;padding:0.35rem 0.5rem 0.5rem">
+          <button class="score-step-btn" onclick="stepScore(2,-1000)">−1000</button>
+          <button class="score-step-btn" onclick="stepScore(2,-100)">−100</button>
+          <button class="score-step-btn" onclick="stepScore(2,100)">+100</button>
+          <button class="score-step-btn" onclick="stepScore(2,1000)">+1000</button>
         </div>
       </div>
       <div class="score-sep">点</div>
@@ -2025,12 +2196,19 @@
       <input class="player-name-input" id="name-3" type="text" placeholder="プレイヤー4" maxlength="10" oninput="liveUpdate()">
     </div>
     <div class="player-score-row">
-      <div class="score-input-wrap">
+      <div class="score-input-wrap" style="flex:1">
         <label>最終点数</label>
-        <div class="score-stepper">
-          <button class="ss-btn" onclick="stepScore(3,-100)">−</button>
-          <input class="score-direct-input" id="score-3" type="number" value="25000" inputmode="numeric" min="100" step="100" oninput="liveUpdate()">
-          <button class="ss-btn" onclick="stepScore(3,100)">＋</button>
+        <div style="display:flex;align-items:center;justify-content:center;padding:0.3rem 0.5rem 0">
+          <input class="score-direct-input" id="score-3" type="text" inputmode="numeric"
+            value="" placeholder="— 点 —"
+            oninput="onScoreInput(3)" onblur="onScoreBlur(3)"
+            style="width:100%;text-align:center;font-size:1.4rem;background:transparent;border:none;outline:none;font-family:var(--font-serif);font-weight:700;color:var(--text);padding:0">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:4px;padding:0.35rem 0.5rem 0.5rem">
+          <button class="score-step-btn" onclick="stepScore(3,-1000)">−1000</button>
+          <button class="score-step-btn" onclick="stepScore(3,-100)">−100</button>
+          <button class="score-step-btn" onclick="stepScore(3,100)">+100</button>
+          <button class="score-step-btn" onclick="stepScore(3,1000)">+1000</button>
         </div>
       </div>
       <div class="score-sep">点</div>
@@ -2046,7 +2224,7 @@
   <!-- 合計確認バー -->
   <div style="width:calc(100% - 2rem);max-width:480px;margin:0 1rem 0.25rem;">
     <div id="sumCheck" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:0.6rem 1rem;display:flex;align-items:center;justify-content:space-between;font-size:0.8rem;">
-      <span style="color:var(--text3)">4人の合計点数</span>
+      <span style="color:var(--text3)">4人の合計<span style="font-size:0.65rem;margin-left:4px;color:var(--blue)">3人入力→1位自動計算</span></span>
       <span id="sumDisplay" style="font-weight:700;color:var(--text2)">100,000</span>
     </div>
   </div>
@@ -2062,6 +2240,14 @@
     <div class="rr-header">
       <span class="rr-title">精算結果</span>
       <div class="rr-setting-tags" id="rrSettingTags"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:28px 1fr auto auto auto auto;gap:5px;padding:0.3rem 0.9rem;border-bottom:1px solid var(--border);background:var(--bg3)">
+      <span></span>
+      <span style="font-size:0.6rem;color:var(--text3);letter-spacing:0.06em">名前</span>
+      <span style="font-size:0.6rem;color:var(--text3);text-align:right;letter-spacing:0.04em">最終点数</span>
+      <span style="font-size:0.6rem;color:var(--text3);text-align:right">素点</span>
+      <span style="font-size:0.6rem;color:var(--text3);text-align:right">ウマ</span>
+      <span style="font-size:0.6rem;color:var(--text3);text-align:right">合計</span>
     </div>
     <div id="rrRows"></div>
     <div class="rr-breakdown" id="rrBreakdown"></div>
@@ -2295,6 +2481,18 @@
   <div style="height:1rem"></div>
 
 </div><!-- /settle-view -->
+
+<!-- ─────── PRESET VIEW ─────── -->
+<div class="preset-view" id="presetView">
+
+  <div class="preset-hint" style="margin-top:0.75rem">
+    💡 現在の設定を名前を付けて保存。ワンタップで全設定を呼び出せます。
+  </div>
+
+  <!-- 動的スロット（追加ボタンも含む） -->
+  <div id="presetSlotContainer" style="width:100%;display:flex;flex-direction:column;align-items:center"></div>
+
+</div><!-- /preset-view -->
 
 <!-- ─────── EDIT MODAL ─────── -->
 <div class="modal-overlay" id="editModal" onclick="closeEditModal(event)">
@@ -2535,14 +2733,10 @@ function getRonScore(han, fu, dealer) {
 // dealer=和了者が親かどうか
 // 戻り値: dealer和了→ {each} / non-dealer和了→ {fromD, fromN}
 function getTsumoScore(han, fu, dealer) {
-  // 25符（チートイツ）：ツモなし
-  if (fu === 25) return null;
-  // 20符1飜：ピンフツモのみ特殊値
-  if (fu === 20 && han === 1) {
-    if (dealer) return { each: 700 };           // 親：700オール
-    else        return { fromD: 700, fromN: 400 }; // 子：400・700
-  }
-  // 20符2飜以降：通常計算
+  if (fu === 25 && han === 1) return null; // 25符1飜なし
+  if (fu === 20 && han === 1) return null; // 20符1飜ツモなし
+  if (fu === 25 && han === 2) return null; // 25符2飜ツモなし（七対子ツモは3飜以上）
+  // 通常計算（25符も通常通り計算）
   const basic = fu * Math.pow(2, han + 2);
   if (dealer) {
     const each = basic >= 2000 ? 4000 : roundUp100(basic * 2);
@@ -2619,7 +2813,7 @@ function renderTable() {
 
       let tsumoLabel = '';
       if (tsumo === null) {
-        // 25符はツモなし表示
+        // ツモなし（25符1飜など）
         tsumoLabel = '<span class="cell-tsumo" style="color:var(--text3)">—</span>';
       } else if (dealer) {
         tsumoLabel = `<span class="cell-tsumo${isMangan?' mangan-t':''}">${tsumo.each.toLocaleString()}×3</span>`;
@@ -2711,7 +2905,7 @@ let showingHistory = false;
 function switchTab(tab) {
   currentTab = tab;
   showingHistory = (tab === 'history');
-  ['score','rank','chip','table','history','settle'].forEach(t => {
+  ['score','rank','chip','table','history','settle','preset'].forEach(t => {
     const el = document.getElementById('tab-'+t);
     if(el) el.className = 'tab-item' + (tab === t ? ' active' : '');
   });
@@ -2721,6 +2915,7 @@ function switchTab(tab) {
   document.getElementById('tableView').className   = tab === 'table'   ? 'table-view show'  : 'table-view';
   document.getElementById('historyView').className = tab === 'history' ? 'history-view show': 'history-view';
   document.getElementById('settleView').className  = tab === 'settle'  ? 'settle-view show' : 'settle-view';
+  document.getElementById('presetView').className  = tab === 'preset'  ? 'preset-view show' : 'preset-view';
   if (tab === 'rank')    { liveUpdate(); }
   if (tab === 'chip')    { buildChipPlayerRows(); }
   if (tab === 'table')   { buildLadiesPlayerList(); feeLiveCalc(); }
@@ -2729,11 +2924,14 @@ function switchTab(tab) {
     switchHistSub(subMap[currentTab] || 'score');
   }
   if (tab === 'settle')  { buildSettlePreview(); }
+  if (tab === 'preset')  { renderAllPresets(); }
   updateAccordionActive(tab);
 }
 
 // ─── History sub-tab switching ────────────────────────────────────────────
 let currentHistSub = 'score';
+const histClearLabels = { score:'点数履歴をすべて削除', rank:'順位履歴をすべて削除', chip:'チップ履歴をすべて削除', table:'場代履歴をすべて削除' };
+
 function switchHistSub(sub) {
   currentHistSub = sub;
   ['score','rank','chip','table'].forEach(t => {
@@ -2742,10 +2940,20 @@ function switchHistSub(sub) {
     if(btn) btn.className = 'table-tab' + (sub===t ? ' active' : '');
     if(sec) sec.style.display = sub===t ? 'flex' : 'none';
   });
+  // 削除ボタンのラベルを現在のタブに合わせて更新
+  const clearBtn = document.getElementById('clearHistBtn');
+  if(clearBtn) clearBtn.textContent = histClearLabels[sub] || 'この履歴をすべて削除';
   if(sub==='score') renderHistory();
   if(sub==='rank')  renderRankHistoryH();
   if(sub==='chip')  renderChipHistoryH();
   if(sub==='table') renderFeeHistoryH();
+}
+
+function clearCurrentHist() {
+  if(currentHistSub==='score') clearHistory();
+  else if(currentHistSub==='rank')  clearRankHistory();
+  else if(currentHistSub==='chip')  clearChipHistory();
+  else if(currentHistSub==='table') clearFeeHistory();
 }
 
 // ─── Ranking state ────────────────────────────────────────────────────────
@@ -2762,6 +2970,49 @@ const UMA_TABLE = {
   '20-30': [30, 20, -20, -30],
   '20-40': [40, 20, -20, -40],
 };
+let customUmaVals = null; // カスタム時: [1位, 2位, 3位, 4位]
+
+function getUmaVals() {
+  return customUmaVals || UMA_TABLE[rankState.uma] || [20, 10, -10, -20];
+}
+
+function setUma(v) {
+  rankState.uma = v;
+  customUmaVals = null;
+  document.getElementById('umaCustomArea').style.display = 'none';
+  document.querySelectorAll('#umaChips .s-chip').forEach(el => {
+    el.className = 's-chip' + (el.textContent === v ? ' active-gold' : '');
+  });
+}
+
+function toggleUmaCustom() {
+  const area = document.getElementById('umaCustomArea');
+  const isOpen = area.style.display !== 'none';
+  if (isOpen) {
+    area.style.display = 'none';
+    document.getElementById('umaCustomBtn').className = 's-chip';
+  } else {
+    area.style.display = 'block';
+    const cur = UMA_TABLE[rankState.uma] || [20, 10, -10, -20];
+    document.getElementById('uma1').value =  cur[0];
+    document.getElementById('uma2').value =  cur[1];
+    document.getElementById('uma3').value =  cur[2];
+    document.getElementById('uma4').value =  cur[3];
+    customUmaVals = [...cur];
+    document.querySelectorAll('#umaChips .s-chip').forEach(el => el.className = 's-chip');
+    document.getElementById('umaCustomBtn').className = 's-chip active-gold';
+    rankState.uma = 'custom';
+  }
+}
+
+function applyCustomUma() {
+  const v1 = parseInt(document.getElementById('uma1').value) || 0;
+  const v2 = parseInt(document.getElementById('uma2').value) || 0;
+  const v3 = parseInt(document.getElementById('uma3').value) || 0;
+  const v4 = parseInt(document.getElementById('uma4').value) || 0;
+  customUmaVals = [v1, v2, v3, v4];
+  rankState.uma = 'custom';
+}
 
 function setStart(v) {
   rankState.startPt = v;
@@ -2782,20 +3033,102 @@ function setReturn(v) {
   });
 }
 
-function stepScore(i, d) {
+// ─── Score input helpers ──────────────────────────────────────────────────
+
+function getScoreVal(i) {
   const el = document.getElementById('score-' + i);
-  el.value = Math.max(100, (parseInt(el.value) || 0) + d);
-  liveUpdate();
+  const raw = el.value.trim();
+  if (raw === '' || raw === '-') return null;
+  const n = parseInt(raw.replace(/[^0-9\-]/g, ''));
+  return isNaN(n) ? null : n;
 }
 
-function liveUpdate() {
-  const scores = [0,1,2,3].map(i => Math.max(100, parseInt(document.getElementById('score-'+i).value) || 100));
+function setScoreVal(i, val) {
+  const el = document.getElementById('score-' + i);
+  if (val === null || val === undefined) {
+    el.value = '';
+  } else {
+    el.value = val.toString();
+  }
+  _updateScoreColor(i, val);
+}
+
+function _updateScoreColor(i, val) {
+  const el = document.getElementById('score-' + i);
+  if (val === null || val === undefined || el.value.trim() === '') {
+    el.style.color = '';
+  } else if (val < 0) {
+    el.style.color = 'var(--red2)';
+  } else {
+    el.style.color = 'var(--text)';
+  }
+}
+
+function onScoreInput(i) {
+  const el = document.getElementById('score-' + i);
+  // ハイフン先頭のみ許可、それ以外の非数字除去
+  const raw = el.value;
+  const cleaned = raw.replace(/[^0-9\-]/g, '').replace(/(?!^)-/g, '');
+  if (cleaned !== raw) el.value = cleaned;
+  el.style.borderColor = '';
+  const v = getScoreVal(i);
+  _updateScoreColor(i, v);
+  // 入力中は自動計算しない（順位・合計のみ更新）
+  liveUpdate(false);
+}
+
+function onScoreBlur(i) {
+  // フォーカスが外れたら自動計算を実行
+  liveUpdate(true);
+}
+
+function stepScore(i, d) {
+  const cur = getScoreVal(i);
+  const base = cur === null ? 0 : cur;
+  const next = base + d;
+  setScoreVal(i, next);
+  const el = document.getElementById('score-' + i);
+  el.style.borderColor = '';
+  // ステップボタンは確定操作なので自動計算する
+  liveUpdate(true);
+}
+
+function liveUpdate(doAutoCalc) {
+  const rawScores = [0,1,2,3].map(i => getScoreVal(i));
+
+  const filledCount = rawScores.filter(v => v !== null).length;
+  const emptyIndices = rawScores.reduce((a, v, i) => v === null ? [...a, i] : a, []);
+
+  // 入力済みセルの色をリセット（自動計算色以外）
+  for (let i = 0; i < 4; i++) {
+    if (rawScores[i] !== null) {
+      const el = document.getElementById('score-' + i);
+      if (el.style.borderColor !== 'var(--gold)') {
+        _updateScoreColor(i, rawScores[i]);
+      }
+    }
+  }
+
+  // 3人入力→残り1人を自動計算（フォーカスアウト・ステップ時のみ）
+  if (doAutoCalc && filledCount === 3 && emptyIndices.length === 1) {
+    const emptyIdx = emptyIndices[0];
+    const expected = rankState.startPt * 4;
+    const filledSum = rawScores.reduce((a, v) => a + (v !== null ? v : 0), 0);
+    const autoVal = expected - filledSum;
+    const autoEl = document.getElementById('score-' + emptyIdx);
+    autoEl.value = autoVal.toString();
+    autoEl.style.color = 'var(--gold2)';
+    autoEl.style.borderColor = 'var(--gold)';
+    rawScores[emptyIdx] = autoVal;
+  }
+
+  const scores = rawScores.map(v => v === null ? 0 : v);
   const sum = scores.reduce((a,b) => a+b, 0);
 
-  // Sum check
+  // 合計チェック
   const sumEl = document.getElementById('sumDisplay');
-  sumEl.textContent = sum.toLocaleString();
   const expected = rankState.startPt * 4;
+  sumEl.textContent = sum.toLocaleString();
   if (sum === expected) {
     sumEl.style.color = 'var(--green)';
     document.getElementById('sumCheck').style.borderColor = 'var(--green)';
@@ -2804,7 +3137,7 @@ function liveUpdate() {
     document.getElementById('sumCheck').style.borderColor = 'var(--red)';
   }
 
-  // Auto rank (by score descending, ties by seat order)
+  // 順位表示
   const indexed = scores.map((s,i) => ({s,i}));
   indexed.sort((a,b) => b.s - a.s || a.i - b.i);
   const rankOf = new Array(4);
@@ -2829,24 +3162,22 @@ function roundGo6(x) {
 }
 
 function calcRanking() {
-  const scores = [0,1,2,3].map(i => Math.max(100, parseInt(document.getElementById('score-'+i).value) || 100));
+  const scores = [0,1,2,3].map(i => getScoreVal(i) ?? 0);
   const names  = [0,1,2,3].map(i => document.getElementById('name-'+i).value.trim() || ('P'+(i+1)));
 
-  const results = computeResults(scores, names, rankState);
-
-  // Display
+  const results = computeResults(scores, names, { ...rankState, customUmaVals });
   displayRankResult(results, rankState);
 
-  // ② 計算後に全員を開始点数にリセット
+  // 計算後に全員を空欄にリセット
   for (let i = 0; i < 4; i++) {
-    document.getElementById('score-'+i).value = rankState.startPt;
+    const el = document.getElementById('score-' + i);
+    el.value = '';
+    el.style.color = '';
+    el.style.borderColor = '';
   }
   liveUpdate();
 
-  // Scroll to result
   setTimeout(() => document.getElementById('rankResultCard').scrollIntoView({ behavior:'smooth', block:'nearest' }), 100);
-
-  // Save history
   saveRankHistory(results, rankState);
   renderRankHistory();
 }
@@ -2857,7 +3188,7 @@ function computeResults(scores, names, settings) {
   players.sort((a,b) => b.score - a.score || a.seat - b.seat);
   players.forEach((p,pos) => { p.rank = pos + 1; });
 
-  const umaVals = UMA_TABLE[settings.uma];
+  const umaVals = settings.customUmaVals || UMA_TABLE[settings.uma] || [20, 10, -10, -20];
   const returnPt = settings.returnPt;
 
   let results = players.map(p => {
@@ -2891,9 +3222,11 @@ function displayRankResult(results, settings) {
     const sign    = p.total > 0 ? '+' : '';
     const rawSign = p.raw > 0 ? '+' : '';
     const umaSign = p.uma > 0 ? '+' : '';
+    const scoreStr = p.score.toLocaleString();
     return `<div class="rr-row${p.rank===1?' winner':''}">
-      <span class="player-rank-badge rank-${p.rank}" style="font-size:0.75rem">${p.rank}</span>
+      <span class="player-rank-badge rank-${p.rank}" style="font-size:0.7rem">${p.rank}</span>
       <span class="rr-name">${p.name}</span>
+      <span class="rr-score">${scoreStr}</span>
       <span class="rr-raw">${rawSign}${p.raw}</span>
       <span class="${umaCls}">${umaSign}${p.uma}</span>
       <span class="${totalCls}">${sign}${p.total}</span>
@@ -3620,14 +3953,15 @@ function updateChipTotal() {
 // ─── Reset functions ─────────────────────────────────────────────────────
 
 function resetRank() {
-  // スコアを開始点数に戻す
+  // スコアのみリセット（名前は保持）
   for (let i = 0; i < 4; i++) {
-    document.getElementById('score-' + i).value = rankState.startPt;
+    const el = document.getElementById('score-' + i);
+    el.value = '';
+    el.style.color = '';
+    el.style.borderColor = '';
   }
-  // 結果カードを非表示
   document.getElementById('rankResultCard').className = 'rank-result-card';
-  // 順位バッジをリセット
-  liveUpdate();
+  liveUpdate(false);
 }
 
 function resetChip() {
@@ -3671,6 +4005,179 @@ function resetSettle() {
   buildSettlePreview();
 }
 
+// ═══════════════════════════════════════════════════════════
+// ─── PRESET SYSTEM ───────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════
+
+function getPresets() {
+  return JSON.parse(localStorage.getItem('mahjong_presets') || '[]');
+}
+function savePresets(presets) {
+  localStorage.setItem('mahjong_presets', JSON.stringify(presets));
+}
+
+function captureCurrentSettings() {
+  return {
+    playerNames:   [0,1,2,3].map(i => document.getElementById('name-'+i)?.value.trim() || ''),
+    startPt:       rankState.startPt,
+    returnPt:      rankState.returnPt,
+    uma:           rankState.uma,
+    customUmaVals: customUmaVals ? [...customUmaVals] : null,
+    chipValue:     parseInt(document.getElementById('chipValue')?.value) || 100,
+    chipPreset:    chipPreset,
+    feePerHour:    parseInt(document.getElementById('feePerHour')?.value) || 500,
+    splitMode:     feeState.splitMode,
+    playerCount:   feeState.playerCount,
+    ladiesDiscPerHour: parseInt(document.getElementById('ladiesDiscPerHour')?.value) || 200,
+    settleRate:    settleRate,
+  };
+}
+
+function applySettings(s) {
+  if (s.playerNames) {
+    s.playerNames.forEach((name, i) => {
+      const el = document.getElementById('name-' + i);
+      if (el) el.value = name;
+    });
+  }
+  setStart(s.startPt);
+  setReturn(s.returnPt);
+  if (s.uma === 'custom' && s.customUmaVals) {
+    customUmaVals = [...s.customUmaVals];
+    rankState.uma = 'custom';
+    document.querySelectorAll('#umaChips .s-chip').forEach(el => el.className = 's-chip');
+    const btn = document.getElementById('umaCustomBtn');
+    if (btn) btn.className = 's-chip active-gold';
+    ['uma1','uma2','uma3','uma4'].forEach((id,i) => {
+      const el = document.getElementById(id);
+      if (el) el.value = s.customUmaVals[i];
+    });
+    const area = document.getElementById('umaCustomArea');
+    if (area) area.style.display = 'block';
+  } else {
+    setUma(s.uma);
+  }
+  if (s.chipValue) { const cv = document.getElementById('chipValue'); if (cv) cv.value = s.chipValue; }
+  if (s.chipPreset) setChipPreset(s.chipPreset);
+  const fph = document.getElementById('feePerHour');
+  if (fph && s.feePerHour) fph.value = s.feePerHour;
+  setSplitMode(s.splitMode || 'equal');
+  if (s.playerCount) {
+    feeState.playerCount = s.playerCount;
+    const pcv = document.getElementById('playerCountVal');
+    if (pcv) pcv.textContent = s.playerCount;
+  }
+  const ldph = document.getElementById('ladiesDiscPerHour');
+  if (ldph && s.ladiesDiscPerHour) ldph.value = s.ladiesDiscPerHour;
+  if (s.settleRate) setRate(s.settleRate);
+  feeLiveCalc();
+}
+
+function presetSettingRows(s) {
+  const names = (s.playerNames || []).filter(n => n);
+  const umaLabel = s.uma === 'custom' && s.customUmaVals
+    ? 'カスタム (+' + s.customUmaVals[0] + '/+' + s.customUmaVals[1] + '/' + s.customUmaVals[2] + '/' + s.customUmaVals[3] + ')'
+    : s.uma;
+  const rows = [
+    ['プレイヤー名', names.length ? names.join(' / ') : '—'],
+    ['開始点数', (s.startPt||25000).toLocaleString() + '点'],
+    ['返し点',   (s.returnPt||30000).toLocaleString() + '点'],
+    ['ウマ',     umaLabel],
+    ['チップ単価', (s.chipValue||100) + '円/枚（デフォルト' + (s.chipPreset||20) + '枚）'],
+    ['場代単価', (s.feePerHour||500).toLocaleString() + '円/時間'],
+    ['割り方', s.splitMode === 'ladies'
+      ? '女性割引 −' + (s.ladiesDiscPerHour||200) + '円/h'
+      : '均等割り（' + (s.playerCount||4) + '人）'],
+    ['精算レート', '1,000点 = ' + (s.settleRate||100) + '円'],
+  ];
+  return rows.map(function(r) {
+    return '<div class="preset-row"><span class="preset-row-label">' + r[0] + '</span><span class="preset-row-val">' + r[1] + '</span></div>';
+  }).join('');
+}
+
+function renderAllPresets() {
+  let presets = getPresets();
+  const container = document.getElementById('presetSlotContainer');
+  if (!container) return;
+
+  // 初回：空なら1スロット自動追加
+  if (presets.length === 0) {
+    presets = [{ id: 'p' + Date.now(), name: '', settings: null, savedAt: null }];
+    savePresets(presets);
+  }
+
+  let html = '';
+  presets.forEach(function(p, idx) {
+    const body = p.settings
+      ? presetSettingRows(p.settings) + '<div style="font-size:0.65rem;color:var(--text3);margin-top:0.4rem;text-align:right">保存: ' + p.savedAt + '</div>'
+      : '<div class="preset-empty">まだ保存されていません</div>';
+    html += '<div class="preset-slot" id="pslot-' + p.id + '" style="width:calc(100% - 2rem);max-width:480px;margin:0.5rem 1rem 0">';
+    html +=   '<div class="preset-slot-header">';
+    html +=     '<div class="preset-number">' + (idx + 1) + '</div>';
+    html +=     '<input class="preset-name-input" id="pname-' + p.id + '" type="text" placeholder="プリセット名" maxlength="20" value="' + (p.name || '').replace(/"/g, '&quot;') + '">';
+    html +=     '<div class="preset-actions">';
+    html +=       '<button class="preset-load-btn" onclick="loadPreset(\'' + p.id + '\')">呼出</button>';
+    html +=       '<button class="preset-save-btn" onclick="savePreset(\'' + p.id + '\')">保存</button>';
+    html +=       '<button class="preset-save-btn" onclick="deletePreset(\'' + p.id + '\')" style="color:var(--red2);border-color:rgba(224,85,85,0.4)">削除</button>';
+    html +=     '</div>';
+    html +=   '</div>';
+    html +=   '<div class="preset-body">' + body + '</div>';
+    html += '</div>';
+  });
+
+  // 追加ボタン
+  html += '<div style="width:calc(100% - 2rem);max-width:480px;margin:0.5rem 1rem 1rem;">';
+  html +=   '<button class="add-extra-btn" style="font-size:0.85rem;padding:0.65rem" onclick="addPresetSlot()">＋ プリセットを追加</button>';
+  html += '</div>';
+
+  container.innerHTML = html;
+}
+
+function addPresetSlot() {
+  const presets = getPresets();
+  presets.push({ id: 'p' + Date.now() + Math.floor(Math.random() * 1000), name: '', settings: null, savedAt: null });
+  savePresets(presets);
+  renderAllPresets();
+  setTimeout(function() {
+    const slots = document.querySelectorAll('#presetSlotContainer .preset-slot');
+    if (slots.length > 0) slots[slots.length - 1].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }, 100);
+}
+
+function savePreset(id) {
+  const presets = getPresets();
+  const idx = presets.findIndex(function(p) { return String(p.id) === String(id); });
+  if (idx < 0) return;
+  const nameEl = document.getElementById('pname-' + id);
+  presets[idx].name     = (nameEl && nameEl.value.trim()) || ('プリセット ' + (idx+1));
+  presets[idx].settings = captureCurrentSettings();
+  presets[idx].savedAt  = new Date().toLocaleString('ja-JP', {month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'});
+  savePresets(presets);
+  renderAllPresets();
+}
+
+function loadPreset(id) {
+  const presets = getPresets();
+  const preset = presets.find(function(p) { return String(p.id) === String(id); });
+  if (!preset || !preset.settings) { alert('まだ保存されていません'); return; }
+  applySettings(preset.settings);
+  const btn = document.querySelector('#pslot-' + id + ' .preset-load-btn');
+  if (btn) { btn.textContent = '✓ 適用'; setTimeout(function() { btn.textContent = '呼出'; }, 1500); }
+}
+
+function deletePreset(id) {
+  const presets = getPresets();
+  if (presets.length <= 1) {
+    if (!confirm('このプリセットをリセットしますか？')) return;
+    presets[0] = { id: Date.now(), name: '', settings: null, savedAt: null };
+  } else {
+    if (!confirm('このプリセットを削除しますか？')) return;
+    const idx = presets.findIndex(function(p) { return String(p.id) === String(id); });
+    if (idx >= 0) presets.splice(idx, 1);
+  }
+  savePresets(presets);
+  renderAllPresets();
+}
 // ─── Init ──────────────────────────────────────────────────────────────────
 renderTable();
 liveUpdate();
