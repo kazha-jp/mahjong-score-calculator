@@ -1471,24 +1471,24 @@
     background: var(--bg3);
     border: 1px solid var(--border2);
     border-radius: 7px;
-    padding: 0.35rem 0.1rem;
-    font-size: 0.72rem;
-    font-weight: 600;
+    padding: 0.4rem 0.1rem;
+    font-size: 0.75rem;
+    font-weight: 700;
     cursor: pointer;
     color: var(--text2);
     transition: all 0.12s;
     font-family: var(--font-sans);
+    white-space: nowrap;
+    width: 100%;
   }
-  .score-step-btn:nth-child(1),
-  .score-step-btn:nth-child(2) {
+  .score-step-minus {
     color: var(--red2);
-    border-color: rgba(224,85,85,0.3);
+    border-color: rgba(224,85,85,0.35);
     background: var(--red-dim);
   }
-  .score-step-btn:nth-child(3),
-  .score-step-btn:nth-child(4) {
+  .score-step-plus {
     color: var(--green);
-    border-color: rgba(76,175,125,0.3);
+    border-color: rgba(76,175,125,0.35);
     background: var(--green-dim);
   }
   .score-step-btn:hover { filter: brightness(1.15); }
@@ -1513,9 +1513,17 @@
     background:linear-gradient(90deg,var(--gold),var(--red),var(--gold)); opacity:0.4;
   }
   .preset-slot-header {
-    display:flex; align-items:center; gap:10px;
-    padding: 0.85rem 1rem 0.5rem;
+    padding: 0.75rem 1rem 0.5rem;
     border-bottom: 1px solid var(--border);
+  }
+  .preset-slot-header-top {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 0.5rem;
+  }
+  .preset-slot-header-btns {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 6px;
   }
   .preset-number {
     width:26px; height:26px; border-radius:50%;
@@ -1527,25 +1535,28 @@
   .preset-name-input {
     flex:1; background:transparent; border:none; outline:none;
     color:var(--text); font-family:var(--font-sans);
-    font-size:0.95rem; font-weight:700;
+    font-size:0.9rem; font-weight:700;
+    min-width:0; /* prevent flex overflow */
   }
   .preset-name-input::placeholder { color:var(--text3); font-weight:400; }
-  .preset-actions { display:flex; gap:6px; }
+  .preset-actions { display:flex; gap:4px; flex-shrink:0; }
   .preset-load-btn {
     background:var(--gold-dim); border:1px solid var(--gold);
     color:var(--gold2); border-radius:7px;
-    padding:0.3rem 0.7rem; font-size:0.75rem; font-weight:700;
+    padding:0.28rem 0.55rem; font-size:0.72rem; font-weight:700;
     cursor:pointer; font-family:var(--font-sans); transition:all 0.12s;
+    white-space:nowrap;
   }
   .preset-load-btn:hover { filter: brightness(1.1); }
   .preset-load-btn:active { opacity:0.7; transform:scale(0.95); }
-  .preset-save-btn:hover  { border-color: var(--border2); color: var(--text); background: var(--surface2); }
-  .preset-save-btn:active { opacity:0.7; transform:scale(0.95); }
+  .preset-save-btn {
     background:var(--surface2); border:1px solid var(--border2);
     color:var(--text2); border-radius:7px;
-    padding:0.3rem 0.7rem; font-size:0.75rem; font-weight:600;
+    padding:0.28rem 0.55rem; font-size:0.72rem; font-weight:600;
     cursor:pointer; font-family:var(--font-sans); transition:all 0.12s;
+    white-space:nowrap;
   }
+  .preset-save-btn:hover  { border-color: var(--border2); color: var(--text); background: var(--surface2); }
   .preset-save-btn:active { opacity:0.7; transform:scale(0.95); }
 
   .preset-body { padding:0.6rem 1rem 0.8rem; }
@@ -2085,138 +2096,142 @@
   </div>
 
   <!-- Player cards -->
-  <div class="player-card">
-    <div class="player-card-header">
-      <div class="player-rank-badge rank-1" id="badge-0">1</div>
-      <div style="font-size:0.68rem;color:var(--text3);letter-spacing:0.08em">東家</div>
+  <div class="player-card" style="position:relative">
+    <!-- 順位バッジ：右上に絶対配置 -->
+    <div style="position:absolute;top:0.75rem;right:0.9rem;display:flex;flex-direction:column;align-items:center;gap:3px">
+      <div class="player-rank-badge rank-1" id="badge-0" style="width:34px;height:34px;font-size:0.95rem">1</div>
+      <span id="rank-disp-0" style="font-size:0.72rem;font-weight:700;color:var(--text3)">—</span>
     </div>
-    <div class="player-name-row">
+    <!-- 家 ラベル -->
+    <div style="padding:0.6rem 1rem 0;font-size:0.65rem;color:var(--text3);letter-spacing:0.1em">東家</div>
+    <!-- 名前 -->
+    <div class="player-name-row" style="padding-right:3.5rem">
       <input class="player-name-input" id="name-0" type="text" placeholder="プレイヤー1" maxlength="10" oninput="liveUpdate()">
     </div>
-    <div class="player-score-row">
-      <div class="score-input-wrap" style="flex:1">
-        <label>最終点数</label>
-        <div style="display:flex;align-items:center;justify-content:center;padding:0.3rem 0.5rem 0">
-          <input class="score-direct-input" id="score-0" type="text" inputmode="numeric"
-            value="" placeholder="— 点 —"
-            oninput="onScoreInput(0)" onblur="onScoreBlur(0)"
-            style="width:100%;text-align:center;font-size:1.4rem;background:transparent;border:none;outline:none;font-family:var(--font-serif);font-weight:700;color:var(--text);padding:0">
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:4px;padding:0.35rem 0.5rem 0.5rem">
-          <button class="score-step-btn" onclick="stepScore(0,-1000)">−1000</button>
-          <button class="score-step-btn" onclick="stepScore(0,-100)">−100</button>
-          <button class="score-step-btn" onclick="stepScore(0,100)">+100</button>
-          <button class="score-step-btn" onclick="stepScore(0,1000)">+1000</button>
-        </div>
+    <!-- 点数入力 -->
+    <div style="padding:0.2rem 1rem 0;border-top:1px solid var(--border);margin-top:0.4rem">
+      <div style="font-size:0.65rem;color:var(--text3);padding-top:0.4rem;margin-bottom:0.1rem">最終点数</div>
+      <input class="score-direct-input" id="score-0" type="text" inputmode="numeric"
+        value="" placeholder="— 点 —"
+        oninput="onScoreInput(0)" onblur="onScoreBlur(0)"
+        style="width:100%;text-align:center;font-size:1.6rem;background:transparent;border:none;outline:none;font-family:var(--font-serif);font-weight:700;color:var(--text);padding:0.2rem 0">
+    </div>
+    <!-- ステップボタン -->
+    <div style="display:flex;flex-direction:column;gap:3px;padding:0.3rem 0.75rem 0.75rem">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px">
+        <button class="score-step-btn score-step-minus" onclick="stepScore(0,-10000)">−10000</button>
+        <button class="score-step-btn score-step-minus" onclick="stepScore(0,-1000)">−1000</button>
+        <button class="score-step-btn score-step-minus" onclick="stepScore(0,-100)">−100</button>
       </div>
-      <div class="score-sep">点</div>
-      <div class="score-input-wrap">
-        <label>自動順位</label>
-        <div class="score-stepper" style="justify-content:center">
-          <span class="ss-val" id="rank-disp-0" style="color:var(--text3)">—</span>
-        </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px">
+        <button class="score-step-btn score-step-plus" onclick="stepScore(0,100)">+100</button>
+        <button class="score-step-btn score-step-plus" onclick="stepScore(0,1000)">+1000</button>
+        <button class="score-step-btn score-step-plus" onclick="stepScore(0,10000)">+10000</button>
       </div>
     </div>
   </div>
 
-  <div class="player-card">
-    <div class="player-card-header">
-      <div class="player-rank-badge rank-2" id="badge-1">2</div>
-      <div style="font-size:0.68rem;color:var(--text3);letter-spacing:0.08em">南家</div>
+  <div class="player-card" style="position:relative">
+    <!-- 順位バッジ：右上に絶対配置 -->
+    <div style="position:absolute;top:0.75rem;right:0.9rem;display:flex;flex-direction:column;align-items:center;gap:3px">
+      <div class="player-rank-badge rank-2" id="badge-1" style="width:34px;height:34px;font-size:0.95rem">2</div>
+      <span id="rank-disp-1" style="font-size:0.72rem;font-weight:700;color:var(--text3)">—</span>
     </div>
-    <div class="player-name-row">
+    <!-- 家 ラベル -->
+    <div style="padding:0.6rem 1rem 0;font-size:0.65rem;color:var(--text3);letter-spacing:0.1em">南家</div>
+    <!-- 名前 -->
+    <div class="player-name-row" style="padding-right:3.5rem">
       <input class="player-name-input" id="name-1" type="text" placeholder="プレイヤー2" maxlength="10" oninput="liveUpdate()">
     </div>
-    <div class="player-score-row">
-      <div class="score-input-wrap" style="flex:1">
-        <label>最終点数</label>
-        <div style="display:flex;align-items:center;justify-content:center;padding:0.3rem 0.5rem 0">
-          <input class="score-direct-input" id="score-1" type="text" inputmode="numeric"
-            value="" placeholder="— 点 —"
-            oninput="onScoreInput(1)" onblur="onScoreBlur(1)"
-            style="width:100%;text-align:center;font-size:1.4rem;background:transparent;border:none;outline:none;font-family:var(--font-serif);font-weight:700;color:var(--text);padding:0">
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:4px;padding:0.35rem 0.5rem 0.5rem">
-          <button class="score-step-btn" onclick="stepScore(1,-1000)">−1000</button>
-          <button class="score-step-btn" onclick="stepScore(1,-100)">−100</button>
-          <button class="score-step-btn" onclick="stepScore(1,100)">+100</button>
-          <button class="score-step-btn" onclick="stepScore(1,1000)">+1000</button>
-        </div>
+    <!-- 点数入力 -->
+    <div style="padding:0.2rem 1rem 0;border-top:1px solid var(--border);margin-top:0.4rem">
+      <div style="font-size:0.65rem;color:var(--text3);padding-top:0.4rem;margin-bottom:0.1rem">最終点数</div>
+      <input class="score-direct-input" id="score-1" type="text" inputmode="numeric"
+        value="" placeholder="— 点 —"
+        oninput="onScoreInput(1)" onblur="onScoreBlur(1)"
+        style="width:100%;text-align:center;font-size:1.6rem;background:transparent;border:none;outline:none;font-family:var(--font-serif);font-weight:700;color:var(--text);padding:0.2rem 0">
+    </div>
+    <!-- ステップボタン -->
+    <div style="display:flex;flex-direction:column;gap:3px;padding:0.3rem 0.75rem 0.75rem">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px">
+        <button class="score-step-btn score-step-minus" onclick="stepScore(1,-10000)">−10000</button>
+        <button class="score-step-btn score-step-minus" onclick="stepScore(1,-1000)">−1000</button>
+        <button class="score-step-btn score-step-minus" onclick="stepScore(1,-100)">−100</button>
       </div>
-      <div class="score-sep">点</div>
-      <div class="score-input-wrap">
-        <label>自動順位</label>
-        <div class="score-stepper" style="justify-content:center">
-          <span class="ss-val" id="rank-disp-1" style="color:var(--text3)">—</span>
-        </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px">
+        <button class="score-step-btn score-step-plus" onclick="stepScore(1,100)">+100</button>
+        <button class="score-step-btn score-step-plus" onclick="stepScore(1,1000)">+1000</button>
+        <button class="score-step-btn score-step-plus" onclick="stepScore(1,10000)">+10000</button>
       </div>
     </div>
   </div>
 
-  <div class="player-card">
-    <div class="player-card-header">
-      <div class="player-rank-badge rank-3" id="badge-2">3</div>
-      <div style="font-size:0.68rem;color:var(--text3);letter-spacing:0.08em">西家</div>
+  <div class="player-card" style="position:relative">
+    <!-- 順位バッジ：右上に絶対配置 -->
+    <div style="position:absolute;top:0.75rem;right:0.9rem;display:flex;flex-direction:column;align-items:center;gap:3px">
+      <div class="player-rank-badge rank-3" id="badge-2" style="width:34px;height:34px;font-size:0.95rem">3</div>
+      <span id="rank-disp-2" style="font-size:0.72rem;font-weight:700;color:var(--text3)">—</span>
     </div>
-    <div class="player-name-row">
+    <!-- 家 ラベル -->
+    <div style="padding:0.6rem 1rem 0;font-size:0.65rem;color:var(--text3);letter-spacing:0.1em">西家</div>
+    <!-- 名前 -->
+    <div class="player-name-row" style="padding-right:3.5rem">
       <input class="player-name-input" id="name-2" type="text" placeholder="プレイヤー3" maxlength="10" oninput="liveUpdate()">
     </div>
-    <div class="player-score-row">
-      <div class="score-input-wrap" style="flex:1">
-        <label>最終点数</label>
-        <div style="display:flex;align-items:center;justify-content:center;padding:0.3rem 0.5rem 0">
-          <input class="score-direct-input" id="score-2" type="text" inputmode="numeric"
-            value="" placeholder="— 点 —"
-            oninput="onScoreInput(2)" onblur="onScoreBlur(2)"
-            style="width:100%;text-align:center;font-size:1.4rem;background:transparent;border:none;outline:none;font-family:var(--font-serif);font-weight:700;color:var(--text);padding:0">
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:4px;padding:0.35rem 0.5rem 0.5rem">
-          <button class="score-step-btn" onclick="stepScore(2,-1000)">−1000</button>
-          <button class="score-step-btn" onclick="stepScore(2,-100)">−100</button>
-          <button class="score-step-btn" onclick="stepScore(2,100)">+100</button>
-          <button class="score-step-btn" onclick="stepScore(2,1000)">+1000</button>
-        </div>
+    <!-- 点数入力 -->
+    <div style="padding:0.2rem 1rem 0;border-top:1px solid var(--border);margin-top:0.4rem">
+      <div style="font-size:0.65rem;color:var(--text3);padding-top:0.4rem;margin-bottom:0.1rem">最終点数</div>
+      <input class="score-direct-input" id="score-2" type="text" inputmode="numeric"
+        value="" placeholder="— 点 —"
+        oninput="onScoreInput(2)" onblur="onScoreBlur(2)"
+        style="width:100%;text-align:center;font-size:1.6rem;background:transparent;border:none;outline:none;font-family:var(--font-serif);font-weight:700;color:var(--text);padding:0.2rem 0">
+    </div>
+    <!-- ステップボタン -->
+    <div style="display:flex;flex-direction:column;gap:3px;padding:0.3rem 0.75rem 0.75rem">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px">
+        <button class="score-step-btn score-step-minus" onclick="stepScore(2,-10000)">−10000</button>
+        <button class="score-step-btn score-step-minus" onclick="stepScore(2,-1000)">−1000</button>
+        <button class="score-step-btn score-step-minus" onclick="stepScore(2,-100)">−100</button>
       </div>
-      <div class="score-sep">点</div>
-      <div class="score-input-wrap">
-        <label>自動順位</label>
-        <div class="score-stepper" style="justify-content:center">
-          <span class="ss-val" id="rank-disp-2" style="color:var(--text3)">—</span>
-        </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px">
+        <button class="score-step-btn score-step-plus" onclick="stepScore(2,100)">+100</button>
+        <button class="score-step-btn score-step-plus" onclick="stepScore(2,1000)">+1000</button>
+        <button class="score-step-btn score-step-plus" onclick="stepScore(2,10000)">+10000</button>
       </div>
     </div>
   </div>
 
-  <div class="player-card">
-    <div class="player-card-header">
-      <div class="player-rank-badge rank-4" id="badge-3">4</div>
-      <div style="font-size:0.68rem;color:var(--text3);letter-spacing:0.08em">北家</div>
+  <div class="player-card" style="position:relative">
+    <!-- 順位バッジ：右上に絶対配置 -->
+    <div style="position:absolute;top:0.75rem;right:0.9rem;display:flex;flex-direction:column;align-items:center;gap:3px">
+      <div class="player-rank-badge rank-4" id="badge-3" style="width:34px;height:34px;font-size:0.95rem">4</div>
+      <span id="rank-disp-3" style="font-size:0.72rem;font-weight:700;color:var(--text3)">—</span>
     </div>
-    <div class="player-name-row">
+    <!-- 家 ラベル -->
+    <div style="padding:0.6rem 1rem 0;font-size:0.65rem;color:var(--text3);letter-spacing:0.1em">北家</div>
+    <!-- 名前 -->
+    <div class="player-name-row" style="padding-right:3.5rem">
       <input class="player-name-input" id="name-3" type="text" placeholder="プレイヤー4" maxlength="10" oninput="liveUpdate()">
     </div>
-    <div class="player-score-row">
-      <div class="score-input-wrap" style="flex:1">
-        <label>最終点数</label>
-        <div style="display:flex;align-items:center;justify-content:center;padding:0.3rem 0.5rem 0">
-          <input class="score-direct-input" id="score-3" type="text" inputmode="numeric"
-            value="" placeholder="— 点 —"
-            oninput="onScoreInput(3)" onblur="onScoreBlur(3)"
-            style="width:100%;text-align:center;font-size:1.4rem;background:transparent;border:none;outline:none;font-family:var(--font-serif);font-weight:700;color:var(--text);padding:0">
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:4px;padding:0.35rem 0.5rem 0.5rem">
-          <button class="score-step-btn" onclick="stepScore(3,-1000)">−1000</button>
-          <button class="score-step-btn" onclick="stepScore(3,-100)">−100</button>
-          <button class="score-step-btn" onclick="stepScore(3,100)">+100</button>
-          <button class="score-step-btn" onclick="stepScore(3,1000)">+1000</button>
-        </div>
+    <!-- 点数入力 -->
+    <div style="padding:0.2rem 1rem 0;border-top:1px solid var(--border);margin-top:0.4rem">
+      <div style="font-size:0.65rem;color:var(--text3);padding-top:0.4rem;margin-bottom:0.1rem">最終点数</div>
+      <input class="score-direct-input" id="score-3" type="text" inputmode="numeric"
+        value="" placeholder="— 点 —"
+        oninput="onScoreInput(3)" onblur="onScoreBlur(3)"
+        style="width:100%;text-align:center;font-size:1.6rem;background:transparent;border:none;outline:none;font-family:var(--font-serif);font-weight:700;color:var(--text);padding:0.2rem 0">
+    </div>
+    <!-- ステップボタン -->
+    <div style="display:flex;flex-direction:column;gap:3px;padding:0.3rem 0.75rem 0.75rem">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px">
+        <button class="score-step-btn score-step-minus" onclick="stepScore(3,-10000)">−10000</button>
+        <button class="score-step-btn score-step-minus" onclick="stepScore(3,-1000)">−1000</button>
+        <button class="score-step-btn score-step-minus" onclick="stepScore(3,-100)">−100</button>
       </div>
-      <div class="score-sep">点</div>
-      <div class="score-input-wrap">
-        <label>自動順位</label>
-        <div class="score-stepper" style="justify-content:center">
-          <span class="ss-val" id="rank-disp-3" style="color:var(--text3)">—</span>
-        </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px">
+        <button class="score-step-btn score-step-plus" onclick="stepScore(3,100)">+100</button>
+        <button class="score-step-btn score-step-plus" onclick="stepScore(3,1000)">+1000</button>
+        <button class="score-step-btn score-step-plus" onclick="stepScore(3,10000)">+10000</button>
       </div>
     </div>
   </div>
@@ -4100,37 +4115,92 @@ function renderAllPresets() {
   const container = document.getElementById('presetSlotContainer');
   if (!container) return;
 
-  // 初回：空なら1スロット自動追加
   if (presets.length === 0) {
     presets = [{ id: 'p' + Date.now(), name: '', settings: null, savedAt: null }];
     savePresets(presets);
   }
 
-  let html = '';
+  while (container.firstChild) container.removeChild(container.firstChild);
+
   presets.forEach(function(p, idx) {
-    const body = p.settings
-      ? presetSettingRows(p.settings) + '<div style="font-size:0.65rem;color:var(--text3);margin-top:0.4rem;text-align:right">保存: ' + p.savedAt + '</div>'
-      : '<div class="preset-empty">まだ保存されていません</div>';
-    html += '<div class="preset-slot" id="pslot-' + p.id + '" style="width:calc(100% - 2rem);max-width:480px;margin:0.5rem 1rem 0">';
-    html +=   '<div class="preset-slot-header">';
-    html +=     '<div class="preset-number">' + (idx + 1) + '</div>';
-    html +=     '<input class="preset-name-input" id="pname-' + p.id + '" type="text" placeholder="プリセット名" maxlength="20" value="' + (p.name || '').replace(/"/g, '&quot;') + '">';
-    html +=     '<div class="preset-actions">';
-    html +=       '<button class="preset-load-btn" onclick="loadPreset(\'' + p.id + '\')">呼出</button>';
-    html +=       '<button class="preset-save-btn" onclick="savePreset(\'' + p.id + '\')">保存</button>';
-    html +=       '<button class="preset-save-btn" onclick="deletePreset(\'' + p.id + '\')" style="color:var(--red2);border-color:rgba(224,85,85,0.4)">削除</button>';
-    html +=     '</div>';
-    html +=   '</div>';
-    html +=   '<div class="preset-body">' + body + '</div>';
-    html += '</div>';
+    var slot = document.createElement('div');
+    slot.className = 'preset-slot';
+    slot.style.cssText = 'width:calc(100% - 2rem);max-width:480px;margin:0.5rem 1rem 0';
+
+    // ── ヘッダー ──
+    var header = document.createElement('div');
+    header.className = 'preset-slot-header';
+
+    // 上段：番号 + 名前
+    var top = document.createElement('div');
+    top.className = 'preset-slot-header-top';
+
+    var num = document.createElement('div');
+    num.className = 'preset-number';
+    num.textContent = idx + 1;
+    top.appendChild(num);
+
+    var nameInput = document.createElement('input');
+    nameInput.className = 'preset-name-input';
+    nameInput.id = 'pname-' + p.id;
+    nameInput.type = 'text';
+    nameInput.placeholder = 'プリセット名';
+    nameInput.maxLength = 20;
+    nameInput.value = p.name || '';
+    top.appendChild(nameInput);
+    header.appendChild(top);
+
+    // 下段：ボタン3つ（3列グリッド）
+    var btns = document.createElement('div');
+    btns.className = 'preset-slot-header-btns';
+
+    var loadBtn = document.createElement('button');
+    loadBtn.className = 'preset-load-btn';
+    loadBtn.textContent = '呼出';
+    loadBtn.style.cssText = 'width:100%';
+    (function(pid){ loadBtn.addEventListener('click', function(){ loadPreset(pid); }); })(p.id);
+    btns.appendChild(loadBtn);
+
+    var saveBtn = document.createElement('button');
+    saveBtn.className = 'preset-save-btn';
+    saveBtn.textContent = '保存';
+    saveBtn.style.cssText = 'width:100%';
+    (function(pid){ saveBtn.addEventListener('click', function(){ savePreset(pid); }); })(p.id);
+    btns.appendChild(saveBtn);
+
+    var delBtn = document.createElement('button');
+    delBtn.className = 'preset-save-btn';
+    delBtn.textContent = '削除';
+    delBtn.style.cssText = 'width:100%;color:var(--red2);border-color:rgba(224,85,85,0.4)';
+    (function(pid){ delBtn.addEventListener('click', function(){ deletePreset(pid); }); })(p.id);
+    btns.appendChild(delBtn);
+
+    header.appendChild(btns);
+    slot.appendChild(header);
+
+    // ── ボディ ──
+    var body = document.createElement('div');
+    body.className = 'preset-body';
+    if (p.settings) {
+      body.innerHTML = presetSettingRows(p.settings) +
+        '<div style="font-size:0.65rem;color:var(--text3);margin-top:0.4rem;text-align:right">保存: ' + p.savedAt + '</div>';
+    } else {
+      body.innerHTML = '<div class="preset-empty">まだ保存されていません</div>';
+    }
+    slot.appendChild(body);
+    container.appendChild(slot);
   });
 
   // 追加ボタン
-  html += '<div style="width:calc(100% - 2rem);max-width:480px;margin:0.5rem 1rem 1rem;">';
-  html +=   '<button class="add-extra-btn" style="font-size:0.85rem;padding:0.65rem" onclick="addPresetSlot()">＋ プリセットを追加</button>';
-  html += '</div>';
-
-  container.innerHTML = html;
+  var addWrap = document.createElement('div');
+  addWrap.style.cssText = 'width:calc(100% - 2rem);max-width:480px;margin:0.5rem 1rem 1rem;';
+  var addBtn = document.createElement('button');
+  addBtn.className = 'add-extra-btn';
+  addBtn.style.cssText = 'font-size:0.85rem;padding:0.65rem;width:100%';
+  addBtn.textContent = '＋ プリセットを追加';
+  addBtn.addEventListener('click', addPresetSlot);
+  addWrap.appendChild(addBtn);
+  container.appendChild(addWrap);
 }
 
 function addPresetSlot() {
